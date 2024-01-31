@@ -5,6 +5,9 @@
  */
 package nilespider.app;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 /**
  *
  * @author macbook
@@ -71,7 +74,17 @@ public class Main extends javax.swing.JFrame {
 
         thresholdPercent.setForeground(new java.awt.Color(51, 153, 0));
         thresholdPercent.setText("50%");
+        thresholdSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                // This method will be called whenever the value of the JSlider changes
+                int sliderValue = thresholdSlider.getValue();
+                thresholdPercent.setText(sliderValue+ "%");
 
+                // Perform any action you want based on the slider value
+                // For example, update a label, perform a calculation, etc.
+            }
+        });
         resultListMain.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
