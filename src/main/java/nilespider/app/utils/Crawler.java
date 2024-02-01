@@ -3,99 +3,158 @@ package nilespider.app.utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
 public class Crawler {
+    private Set<String> visitedUrls;
+    private String searchString;
+    private static ArrayList<String> foundUrls = new ArrayList<>();
 
-    private HashSet<String> visitedUrls;
-    private ArrayList<String> allVisitedUrls;
-    private ArrayList<String> matchingWebpages;
-    private String baseUrl;
-    private String query;
-
-    public Crawler(String url, String query) {
-        baseUrl = getBaseUrl(url);
-        visitedUrls = new HashSet<>();
-        allVisitedUrls = new ArrayList<>();
-        matchingWebpages = new ArrayList<>();
-        this.query = query;
-        crawl(url);
+    public Crawler(String searchString) {
+        this.visitedUrls = new HashSet<>();
+        this.searchString = searchString;
     }
 
-    public void crawl(String url) {
-        if (!visitedUrls.contains(url) && url.contains(baseUrl)) {
-            try {
-                visitedUrls.add(url);
-                allVisitedUrls.add(url);
+    public void crawl(String baseUrl) {
+        Queue<String> queue = new LinkedList<>();
+        queue.add(baseUrl);
 
-                URLConnection connection = new URL(url).openConnection();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder html = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    html.append(line);
-                }
-                reader.close();
+        while (!queue.isEmpty()) {
+            String currentUrl = queue.poll();
 
-                String htmlString = html.toString();
+            if (!visitedUrls.contains(currentUrl)) {
+                visitedUrls.add(currentUrl);
+                System.out.println("Crawling: " + currentUrl);
 
-                if (htmlString.contains(query)) {
-                    matchingWebpages.add(url);
+                if (searchStringFound(currentUrl)) {
+                    System.out.println("String found on: " + currentUrl);
+                    foundUrls.add(currentUrl);
                 }
 
-                Pattern pattern = Pattern.compile("<a\\s+href\\s*=\\s*\"(.*?)\"");
-                Matcher matcher = pattern.matcher(htmlString);
-                while (matcher.find()) {
-                    String link = matcher.group(1);
+                Set<String> internalUrls = extractInternalUrls(currentUrl, baseUrl);
+                queue.addAll(internalUrls);
 
-                    // Normalize the link
-                    URL normalizedUrl = new URL(new URL(url), link);
-                    String normalizedLink = normalizedUrl.toString();
-
-                    // Ensure the normalized link contains the base URL
-                    if (normalizedLink.contains(baseUrl)) {
-                        crawl(normalizedLink);
-                    }
-                }
-            } catch (IOException e) {
-                System.out.println(e.getMessage() + "\n" + e.toString());
+                Set<String> internalHyperlinks = extractInternalHyperlinks(currentUrl, baseUrl);
+                queue.addAll(internalHyperlinks);
             }
         }
     }
 
-    public ArrayList<String> getAllVisitedUrls() {
-        return allVisitedUrls;
+    public ArrayList<String> getFoundUrls() {
+        return foundUrls;
     }
 
-    public ArrayList<String> getMatchingWebpages() {
-        return matchingWebpages;
-    }
+    private Set<String> extractInternalUrls(String baseUrl, String currentUrl) {
+        Set<String> internalUrls = new HashSet<>();
 
-    private String getBaseUrl(String url) {
         try {
-            URL parsedUrl = new URL(url);
-            return parsedUrl.getProtocol() + "://" + parsedUrl.getHost();
-        } catch (Exception e) {
-            return "";
+            URL url = new URL(currentUrl);
+            HttpURLConnection connection = openConnection(url);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // You can use a more sophisticated HTML parsing library for better results
+                if (line.contains("href=\"")) {
+                    String href = line.split("href=\"")[1].split("\"")[0];
+                    if (href.startsWith("/") || href.startsWith(baseUrl)) {
+                        URL absoluteUrl = new URL(url, href);
+                        internalUrls.add(absoluteUrl.toString());
+                    }
+                }
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return internalUrls;
+    }
+
+    private Set<String> extractInternalHyperlinks(String baseUrl, String currentUrl) {
+        Set<String> internalHyperlinks = new HashSet<>();
+
+        try {
+            URL url = new URL(currentUrl);
+            HttpURLConnection connection = openConnection(url);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // You can use a more sophisticated HTML parsing library for better results
+                if (line.contains("<a ") && line.contains("href=\"")) {
+                    String href = line.split("href=\"")[1].split("\"")[0];
+                    if (href.startsWith("/") || href.startsWith(baseUrl)) {
+                        URL absoluteUrl = new URL(url, href);
+                        internalHyperlinks.add(absoluteUrl.toString());
+                    }
+                }
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return internalHyperlinks;
+    }
+
+    private boolean searchStringFound(String url) {
+        try {
+            URL targetUrl = new URL(url);
+            HttpURLConnection connection = openConnection(targetUrl);
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains(searchString)) {
+                        reader.close();
+                        return true;
+                    }
+                }
+
+                reader.close();
+            } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                System.out.println("Page not found: " + url);
+            } else {
+                System.out.println("Failed to retrieve content from " + url + ". Response code: " + responseCode);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    private HttpURLConnection openConnection(URL url) throws IOException {
+        if (url.getProtocol().equalsIgnoreCase("https")) {
+            return (HttpURLConnection) url.openConnection();
+        } else {
+            return (HttpURLConnection) url.openConnection();
         }
     }
 
-    public static void main(String args[]) {
-        Crawler crawler = new Crawler("https://sites.google.com/site/manishankarmondalwebsite", "IWSC 2016");
+    public static void main(String[] args) {
+        String baseUrl = "https://gharoaa.com";
+        String searchString = "Name";
 
-        for (String s : crawler.visitedUrls) {
-            System.out.println(s);
-        }
+        Crawler crawler = new Crawler(searchString);
+        crawler.crawl(baseUrl);
 
-        System.out.println("Matching Webpages:");
-        ArrayList<String> matchingWebpages = crawler.getMatchingWebpages();
-        for (String s : matchingWebpages) {
-            System.out.println(s);
+        ArrayList<String> foundUrls = crawler.getFoundUrls();
+        System.out.println("Found URLs:");
+        for (String foundUrl : foundUrls) {
+            System.out.println(foundUrl);
         }
     }
 }

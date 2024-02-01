@@ -75,10 +75,13 @@ public class Main extends javax.swing.JFrame {
                 if (!listModel.isEmpty()){
                     listModel.clear();
                 }
-                listModel.addElement("Messi");
-                listModel.addElement("Ronaldo");
-                listModel.addElement("Pele");
-                listModel.addElement("Maradona");
+                Crawler crawler = new Crawler(query);
+                crawler.crawl(url);
+                ArrayList<String> searchResultUrls = crawler.getFoundUrls();
+                for (String data: searchResultUrls)
+                {
+                    listModel.addElement(data);
+                }
             }
         });
         optionSelectorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Text", "Phone", "Email", "Geographic Information", "Images", "Videos", "PDFs", "Other Docs", "Interesting Files" }));
