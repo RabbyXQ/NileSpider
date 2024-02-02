@@ -50,9 +50,7 @@ public class Main extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        this.visitedUrls = new HashSet<>();
-        this.searchString = query;
-        listModel = new DefaultListModel<>();
+
         urlBar = new javax.swing.JTextField();
         crawlBtn = new javax.swing.JButton();
         optionSelectorComboBox = new javax.swing.JComboBox<>();
@@ -68,6 +66,8 @@ public class Main extends javax.swing.JFrame {
         queryText = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         crawlingMessage = new javax.swing.JLabel();
+        pauseBtn = new javax.swing.JToggleButton();
+        stopBtn = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         loadMenuItem = new javax.swing.JMenuItem();
@@ -80,34 +80,11 @@ public class Main extends javax.swing.JFrame {
         urlBar.setFont(new java.awt.Font("Helvetica", 0, 13)); // NOI18N
         urlBar.setText("https://");
         urlBar.setActionCommand("<Not Set>");
-        urlBar.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        urlBar.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 3, true));
 
         crawlBtn.setFont(new java.awt.Font("Helvetica", 0, 13)); // NOI18N
         crawlBtn.setText("Crawl");
-        crawlBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                baseUrl = urlBar.getText().toString().toLowerCase();
-                query = queryText.getText().toString().toLowerCase();
-                searchString = query;
-                if (!listModel.isEmpty()){
-                    listModel.clear();
-                }
-                if (!loadingBarVisibility)
-                {
-                    loadingBarVisibility = true;
-                    loadingBar.show();
-                }
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        crawl();
-                    }
-                };
-                Thread thread = new Thread(runnable);
-                thread.start();
-            }
-        });
+
         optionSelectorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Text", "Phone", "Email", "Geographic Information", "Images", "Videos", "PDFs", "Other Docs", "Interesting Files" }));
         optionSelectorComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -124,7 +101,11 @@ public class Main extends javax.swing.JFrame {
         thresholdPercent.setForeground(new java.awt.Color(51, 153, 0));
         thresholdPercent.setText("50%");
 
-        resultListMain.setModel(listModel);
+        resultListMain.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
         jScrollPane1.setViewportView(resultListMain);
 
         visualizeBtn.setText("Visualize");
@@ -141,7 +122,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        queryText.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        queryText.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 153), 3, true));
         queryText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 queryTextActionPerformed(evt);
@@ -151,6 +132,15 @@ public class Main extends javax.swing.JFrame {
         jLabel3.setText("Query");
 
         crawlingMessage.setForeground(new java.awt.Color(51, 204, 0));
+
+        pauseBtn.setText("Pause");
+        pauseBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pauseBtnActionPerformed(evt);
+            }
+        });
+
+        stopBtn.setText("Stop");
 
         jMenu1.setText("File");
 
@@ -186,36 +176,37 @@ public class Main extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(urlBar, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                                        .addComponent(jLabel3))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(optionSelectorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addGap(18, 18, 18))
+                                .addComponent(urlBar, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel3))
                             .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel1)
+                                .addComponent(optionSelectorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(queryText)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(crawlBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(visualizeBtn)
-                                    .addComponent(historyBtn))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(106, 106, 106)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel2)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(thresholdPercent))
                                     .addComponent(thresholdSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 4, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(queryText)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(crawlBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addGap(369, 369, 369)
+                        .addComponent(pauseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(stopBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(visualizeBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(historyBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addComponent(loadingBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
@@ -234,26 +225,36 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(urlBar, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(queryText))
                     .addComponent(jLabel3))
-                .addGap(1, 1, 1)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2)
-                        .addComponent(thresholdPercent)
-                        .addComponent(visualizeBtn)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel1)
+                        .addGap(4, 4, 4))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(pauseBtn)
+                            .addComponent(visualizeBtn)
+                            .addComponent(stopBtn)
+                            .addComponent(historyBtn))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(thresholdSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(historyBtn)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(thresholdPercent))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(thresholdSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(optionSelectorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(crawlingMessage)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
         );
 
-        setBounds(0, 0, 753, 587);
+        setBounds(0, 0, 878, 605);
     }// </editor-fold>//GEN-END:initComponents
 
     public void crawl() {
@@ -413,6 +414,10 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_queryTextActionPerformed
 
+    private void pauseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pauseBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -462,10 +467,12 @@ public class Main extends javax.swing.JFrame {
     public javax.swing.JMenuItem loadMenuItem;
     public javax.swing.JProgressBar loadingBar;
     public javax.swing.JComboBox<String> optionSelectorComboBox;
+    public javax.swing.JToggleButton pauseBtn;
     public javax.swing.JTextField queryText;
     public javax.swing.JList<String> resultListMain;
     public javax.swing.JMenuItem saveAsMenuItem;
     public javax.swing.JMenuItem saveMenuItem;
+    public javax.swing.JButton stopBtn;
     public javax.swing.JLabel thresholdPercent;
     public javax.swing.JSlider thresholdSlider;
     public javax.swing.JTextField urlBar;
