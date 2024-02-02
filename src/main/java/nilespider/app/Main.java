@@ -50,7 +50,9 @@ public class Main extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        this.visitedUrls = new HashSet<>();
+        this.searchString = query;
+        listModel = new DefaultListModel<>();
         urlBar = new javax.swing.JTextField();
         crawlBtn = new javax.swing.JButton();
         optionSelectorComboBox = new javax.swing.JComboBox<>();
@@ -84,7 +86,30 @@ public class Main extends javax.swing.JFrame {
 
         crawlBtn.setFont(new java.awt.Font("Helvetica", 0, 13)); // NOI18N
         crawlBtn.setText("Crawl");
-
+        crawlBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                baseUrl = urlBar.getText().toString().toLowerCase();
+                query = queryText.getText().toString().toLowerCase();
+                searchString = query;
+                if (!listModel.isEmpty()){
+                    listModel.clear();
+                }
+                if (!loadingBarVisibility)
+                {
+                    loadingBarVisibility = true;
+                    loadingBar.show();
+                }
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        crawl();
+                    }
+                };
+                Thread thread = new Thread(runnable);
+                thread.start();
+            }
+        });
         optionSelectorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Text", "Phone", "Email", "Geographic Information", "Images", "Videos", "PDFs", "Other Docs", "Interesting Files" }));
         optionSelectorComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -101,11 +126,19 @@ public class Main extends javax.swing.JFrame {
         thresholdPercent.setForeground(new java.awt.Color(51, 153, 0));
         thresholdPercent.setText("50%");
 
-        resultListMain.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        thresholdSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                // This method will be called whenever the value of the JSlider changes
+                int sliderValue = thresholdSlider.getValue();
+                thresholdPercent.setText(sliderValue+"%");
+
+                // Perform any action you want based on the slider value
+                // For example, update a label, perform a calculation, etc.
+            }
         });
+
+        resultListMain.setModel(listModel);
         jScrollPane1.setViewportView(resultListMain);
 
         visualizeBtn.setText("Visualize");
