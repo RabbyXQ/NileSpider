@@ -8,6 +8,7 @@ package nilespider.app;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -31,8 +32,11 @@ public class Main extends javax.swing.JFrame {
     private Set<String> visitedUrls;
     private String searchString;
     private String baseUrl;
-
     private boolean loadingBarVisibility = false;
+    private boolean actionBtnVisibility = false;
+    private boolean isCrawlingRunning = false;
+    private Thread crawlingThread;
+    private Runnable crawlingRunnable;
     private static ArrayList<String> foundUrls = new ArrayList<>();
 
     /**
@@ -76,16 +80,27 @@ public class Main extends javax.swing.JFrame {
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         downloadsMenuItem = new javax.swing.JMenu();
-
+        crawlingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                crawl();
+            }
+        };
+        crawlingThread = new Thread(crawlingRunnable);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         urlBar.setFont(new java.awt.Font("Helvetica", 0, 13)); // NOI18N
         urlBar.setText("https://");
         urlBar.setActionCommand("<Not Set>");
         urlBar.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 3, true));
-
+        {
+            visualizeBtn.hide();
+            pauseBtn.hide();
+            stopBtn.hide();
+        }
         crawlBtn.setFont(new java.awt.Font("Helvetica", 0, 13)); // NOI18N
         crawlBtn.setText("Crawl");
+        loadingBar.hide();
         crawlBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -95,21 +110,57 @@ public class Main extends javax.swing.JFrame {
                 if (!listModel.isEmpty()){
                     listModel.clear();
                 }
+                if (loadingBarVisibility)
+                {
+                    loadingBar.setValue(0);
+                }
                 if (!loadingBarVisibility)
                 {
                     loadingBarVisibility = true;
                     loadingBar.show();
                 }
-                Runnable runnable = new Runnable() {
+                if (!actionBtnVisibility)
+                {
+                    visualizeBtn.show();
+                    pauseBtn.show();
+                    stopBtn.show();
+                }
+                if (isCrawlingRunning)
+                {
+                    crawlingThread.stop();
+                    isCrawlingRunning = false;
+                }
+                crawlingThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         crawl();
                     }
-                };
-                Thread thread = new Thread(runnable);
-                thread.start();
+                });
+                crawlingThread.start();
+                isCrawlingRunning = true;
             }
         });
+
+        stopBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Hello From Stop Button");
+                    if (isCrawlingRunning){
+                        crawlingThread.stop();
+                        isCrawlingRunning = false;
+                    }
+                    {
+                        loadingBar.setValue(0);
+                        loadingBar.hide();
+                        visualizeBtn.hide();
+                        pauseBtn.hide();
+                        stopBtn.hide();
+                    }
+                    crawlingMessage.setText("Crawling Process stoped");
+                    crawlingMessage.setForeground(new Color(180, 0, 0));
+            }
+        });
+
         optionSelectorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Text", "Phone", "Email", "Geographic Information", "Images", "Videos", "PDFs", "Other Docs", "Interesting Files" }));
         optionSelectorComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
