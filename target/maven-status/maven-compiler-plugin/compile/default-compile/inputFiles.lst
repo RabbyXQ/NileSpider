@@ -7,6 +7,7 @@
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/ui/pages/WebView.java
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/ui/webpage/WebPageRenderer.java
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/utils/IdentifyType.java
+/Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/utils/crawlers/EmailValidator.java
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/ui/list/VideoListAdapter.java
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/utils/crawlers/MediaCrawler.java
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/Main.java
@@ -18,6 +19,7 @@
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/ui/list/ListItem.java
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/ui/list/ListAdapter.java
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/ds/Graph.java
+/Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/utils/JsoupCrawler.java
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/utils/crawlers/ImageCrawler.java
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/ui/list/PDFListAdapter.java
 /Users/macbook/NetBeansProjects/NileSpider/src/main/java/nilespider/app/ui/pages/History.java

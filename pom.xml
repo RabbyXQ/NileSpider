@@ -10,14 +10,14 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-<dependencies>
-    <!-- Other dependencies... -->
-    
-    <!-- Jsoup dependency -->
+    <dependencies>
+    <!-- Other dependencies -->
+
     <dependency>
         <groupId>org.jsoup</groupId>
         <artifactId>jsoup</artifactId>
-        <version>1.14.3</version> <!-- Check for the latest version on the Jsoup website -->
+        <version>1.14.3</version> <!-- Use the latest version available -->
     </dependency>
 </dependencies>
+
 </project>
