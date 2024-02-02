@@ -50,8 +50,7 @@ public class Main extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        this.visitedUrls = new HashSet<>();
-        this.searchString = query;
+
         urlBar = new javax.swing.JTextField();
         crawlBtn = new javax.swing.JButton();
         optionSelectorComboBox = new javax.swing.JComboBox<>();
@@ -66,13 +65,14 @@ public class Main extends javax.swing.JFrame {
         loadingBar = new javax.swing.JProgressBar();
         queryText = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        crawlingMessage = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         loadMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         downloadsMenuItem = new javax.swing.JMenu();
-        listModel = new DefaultListModel<>();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         urlBar.setFont(new java.awt.Font("Helvetica", 0, 13)); // NOI18N
@@ -82,30 +82,7 @@ public class Main extends javax.swing.JFrame {
 
         crawlBtn.setFont(new java.awt.Font("Helvetica", 0, 13)); // NOI18N
         crawlBtn.setText("Crawl");
-        crawlBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                baseUrl = urlBar.getText().toString().toLowerCase();
-                query = queryText.getText().toString().toLowerCase();
-                searchString = query;
-                if (!listModel.isEmpty()){
-                    listModel.clear();
-                }
-                if (!loadingBarVisibility)
-                {
-                    loadingBarVisibility = true;
-                    loadingBar.show();
-                }
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        crawl();
-                    }
-                };
-                Thread thread = new Thread(runnable);
-                thread.start();
-            }
-        });
+
         optionSelectorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Text", "Phone", "Email", "Geographic Information", "Images", "Videos", "PDFs", "Other Docs", "Interesting Files" }));
         optionSelectorComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -122,8 +99,11 @@ public class Main extends javax.swing.JFrame {
         thresholdPercent.setForeground(new java.awt.Color(51, 153, 0));
         thresholdPercent.setText("50%");
 
-        resultListMain.setModel(listModel);
-
+        resultListMain.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
         jScrollPane1.setViewportView(resultListMain);
 
         visualizeBtn.setText("Visualize");
@@ -148,6 +128,8 @@ public class Main extends javax.swing.JFrame {
         });
 
         jLabel3.setText("Query");
+
+        crawlingMessage.setForeground(new java.awt.Color(51, 204, 0));
 
         jMenu1.setText("File");
 
@@ -184,16 +166,18 @@ public class Main extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(optionSelectorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(jLabel1)))
-                                .addGap(78, 78, 78))
+                                        .addComponent(urlBar, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                                        .addComponent(jLabel3))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(optionSelectorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(18, 18, 18))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(urlBar, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)))
+                                .addContainerGap()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -213,6 +197,10 @@ public class Main extends javax.swing.JFrame {
                                 .addComponent(crawlBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
             .addComponent(loadingBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(crawlingMessage)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -239,7 +227,9 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(historyBtn)
                         .addComponent(optionSelectorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE))
+                .addComponent(crawlingMessage)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE))
         );
 
         setBounds(0, 0, 753, 587);
@@ -258,6 +248,7 @@ public class Main extends javax.swing.JFrame {
             loadingBar.setValue(100);
             loadingBar.hide();
             loadingBarVisibility = false;
+            crawlingMessage.setText("Crawling Done...");
         }
         int loader = 0;
         while (!queue.isEmpty()) {
@@ -266,10 +257,12 @@ public class Main extends javax.swing.JFrame {
             if (!visitedUrls.contains(currentUrl) && currentUrl.contains(baseUrl)) {
                 visitedUrls.add(currentUrl);
                 System.out.println("Crawling: " + currentUrl);
+                crawlingMessage.setText("Crawling: " + currentUrl);
                 loader +=5;
                 loadingBar.setValue(loader);
                 if (searchStringFound(currentUrl)) {
                     System.out.println("String found on: " + currentUrl);
+                    crawlingMessage.setText("String found on: " + currentUrl);
                     listModel.addElement(currentUrl);
                     foundUrls.add(currentUrl);
                 }
@@ -436,6 +429,7 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton crawlBtn;
+    public javax.swing.JLabel crawlingMessage;
     public javax.swing.JMenu downloadsMenuItem;
     public javax.swing.JButton historyBtn;
     private javax.swing.JLabel jLabel1;
