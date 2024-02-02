@@ -14,21 +14,29 @@ import java.util.Set;
 public class Crawler {
     private Set<String> visitedUrls;
     private String searchString;
-    private static ArrayList<String> foundUrls = new ArrayList<>();
+    private ArrayList<String> foundUrls;
+    private String baseUrl;
 
-    public Crawler(String searchString) {
+    public Crawler(String searchString, String baseUrl) {
         this.visitedUrls = new HashSet<>();
         this.searchString = searchString;
+        this.foundUrls = new ArrayList<>();
+        this.baseUrl = baseUrl;
     }
 
-    public void crawl(String baseUrl) {
+    public void crawl() {
+        if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+            System.out.println("Invalid base URL. It should start with 'http://' or 'https://'.");
+            return;
+        }
+
         Queue<String> queue = new LinkedList<>();
         queue.add(baseUrl);
 
         while (!queue.isEmpty()) {
             String currentUrl = queue.poll();
 
-            if (!visitedUrls.contains(currentUrl)) {
+            if (!visitedUrls.contains(currentUrl) && currentUrl.contains(baseUrl)) {
                 visitedUrls.add(currentUrl);
                 System.out.println("Crawling: " + currentUrl);
 
@@ -37,10 +45,10 @@ public class Crawler {
                     foundUrls.add(currentUrl);
                 }
 
-                Set<String> internalUrls = extractInternalUrls(currentUrl, baseUrl);
-                queue.addAll(internalUrls);
+                Set<String> internalUrls = extractInternalUrls(currentUrl);
+                Set<String> internalHyperlinks = extractInternalHyperlinks(currentUrl);
 
-                Set<String> internalHyperlinks = extractInternalHyperlinks(currentUrl, baseUrl);
+                queue.addAll(internalUrls);
                 queue.addAll(internalHyperlinks);
             }
         }
@@ -50,7 +58,7 @@ public class Crawler {
         return foundUrls;
     }
 
-    private Set<String> extractInternalUrls(String baseUrl, String currentUrl) {
+    private Set<String> extractInternalUrls(String currentUrl) {
         Set<String> internalUrls = new HashSet<>();
 
         try {
@@ -60,7 +68,6 @@ public class Crawler {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                // You can use a more sophisticated HTML parsing library for better results
                 if (line.contains("href=\"")) {
                     String href = line.split("href=\"")[1].split("\"")[0];
                     if (href.startsWith("/") || href.startsWith(baseUrl)) {
@@ -78,7 +85,7 @@ public class Crawler {
         return internalUrls;
     }
 
-    private Set<String> extractInternalHyperlinks(String baseUrl, String currentUrl) {
+    private Set<String> extractInternalHyperlinks(String currentUrl) {
         Set<String> internalHyperlinks = new HashSet<>();
 
         try {
@@ -88,7 +95,6 @@ public class Crawler {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                // You can use a more sophisticated HTML parsing library for better results
                 if (line.contains("<a ") && line.contains("href=\"")) {
                     String href = line.split("href=\"")[1].split("\"")[0];
                     if (href.startsWith("/") || href.startsWith(baseUrl)) {
@@ -145,11 +151,11 @@ public class Crawler {
     }
 
     public static void main(String[] args) {
-        String baseUrl = "https://gharoaa.com";
-        String searchString = "Name";
+        String baseUrl = "https://bbhss.vercel.app";
+        String searchString = "01925";
 
-        Crawler crawler = new Crawler(searchString);
-        crawler.crawl(baseUrl);
+        Crawler crawler = new Crawler(searchString, baseUrl);
+        crawler.crawl();
 
         ArrayList<String> foundUrls = crawler.getFoundUrls();
         System.out.println("Found URLs:");

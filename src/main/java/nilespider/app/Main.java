@@ -10,7 +10,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
+
 import nilespider.app.utils.Crawler;
 
 /**
@@ -22,6 +28,13 @@ public class Main extends javax.swing.JFrame {
     private String url;
     private String query;
     public DefaultListModel<String> listModel;
+    private Set<String> visitedUrls;
+    private String searchString;
+    private String baseUrl;
+
+    private boolean loadingBarVisibility = false;
+    private static ArrayList<String> foundUrls = new ArrayList<>();
+
     /**
      * Creates new form Main
      */
@@ -37,6 +50,8 @@ public class Main extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        this.visitedUrls = new HashSet<>();
+        this.searchString = query;
         urlBar = new javax.swing.JTextField();
         crawlBtn = new javax.swing.JButton();
         optionSelectorComboBox = new javax.swing.JComboBox<>();
@@ -70,18 +85,25 @@ public class Main extends javax.swing.JFrame {
         crawlBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                url = urlBar.getText().toString().toLowerCase();
+                baseUrl = urlBar.getText().toString().toLowerCase();
                 query = queryText.getText().toString().toLowerCase();
+                searchString = query;
                 if (!listModel.isEmpty()){
                     listModel.clear();
                 }
-                Crawler crawler = new Crawler(query);
-                crawler.crawl(url);
-                ArrayList<String> searchResultUrls = crawler.getFoundUrls();
-                for (String data: searchResultUrls)
+                if (!loadingBarVisibility)
                 {
-                    listModel.addElement(data);
+                    loadingBarVisibility = true;
+                    loadingBar.show();
                 }
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        crawl();
+                    }
+                };
+                Thread thread = new Thread(runnable);
+                thread.start();
             }
         });
         optionSelectorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Text", "Phone", "Email", "Geographic Information", "Images", "Videos", "PDFs", "Other Docs", "Interesting Files" }));
@@ -223,6 +245,140 @@ public class Main extends javax.swing.JFrame {
         setBounds(0, 0, 753, 587);
     }// </editor-fold>//GEN-END:initComponents
 
+    public void crawl() {
+        if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+            System.out.println("Invalid base URL. It should start with 'http://' or 'https://'.");
+            return;
+        }
+
+        Queue<String> queue = new LinkedList<>();
+        queue.add(baseUrl);
+        if (queue.isEmpty())
+        {
+            loadingBar.setValue(100);
+            loadingBar.hide();
+            loadingBarVisibility = false;
+        }
+        int loader = 0;
+        while (!queue.isEmpty()) {
+            String currentUrl = queue.poll();
+
+            if (!visitedUrls.contains(currentUrl) && currentUrl.contains(baseUrl)) {
+                visitedUrls.add(currentUrl);
+                System.out.println("Crawling: " + currentUrl);
+                loader +=5;
+                loadingBar.setValue(loader);
+                if (searchStringFound(currentUrl)) {
+                    System.out.println("String found on: " + currentUrl);
+                    listModel.addElement(currentUrl);
+                    foundUrls.add(currentUrl);
+                }
+
+                Set<String> internalUrls = extractInternalUrls(currentUrl);
+                Set<String> internalHyperlinks = extractInternalHyperlinks(currentUrl);
+
+                queue.addAll(internalUrls);
+                queue.addAll(internalHyperlinks);
+            }
+        }
+    }
+
+    public ArrayList<String> getFoundUrls() {
+        return foundUrls;
+    }
+
+    private Set<String> extractInternalUrls(String currentUrl) {
+        Set<String> internalUrls = new HashSet<>();
+
+        try {
+            URL url = new URL(currentUrl);
+            HttpURLConnection connection = openConnection(url);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("href=\"")) {
+                    String href = line.split("href=\"")[1].split("\"")[0];
+                    if (href.startsWith("/") || href.startsWith(baseUrl)) {
+                        URL absoluteUrl = new URL(url, href);
+                        internalUrls.add(absoluteUrl.toString());
+                    }
+                }
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return internalUrls;
+    }
+
+    private Set<String> extractInternalHyperlinks(String currentUrl) {
+        Set<String> internalHyperlinks = new HashSet<>();
+
+        try {
+            URL url = new URL(currentUrl);
+            HttpURLConnection connection = openConnection(url);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("<a ") && line.contains("href=\"")) {
+                    String href = line.split("href=\"")[1].split("\"")[0];
+                    if (href.startsWith("/") || href.startsWith(baseUrl)) {
+                        URL absoluteUrl = new URL(url, href);
+                        internalHyperlinks.add(absoluteUrl.toString());
+                    }
+                }
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return internalHyperlinks;
+    }
+
+    private boolean searchStringFound(String url) {
+        try {
+            URL targetUrl = new URL(url);
+            HttpURLConnection connection = openConnection(targetUrl);
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains(searchString)) {
+                        reader.close();
+                        return true;
+                    }
+                }
+
+                reader.close();
+            } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                System.out.println("Page not found: " + url);
+            } else {
+                System.out.println("Failed to retrieve content from " + url + ". Response code: " + responseCode);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    private HttpURLConnection openConnection(URL url) throws IOException {
+        if (url.getProtocol().equalsIgnoreCase("https")) {
+            return (HttpURLConnection) url.openConnection();
+        } else {
+            return (HttpURLConnection) url.openConnection();
+        }
+    }
+
     private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_saveMenuItemActionPerformed
@@ -300,7 +456,5 @@ public class Main extends javax.swing.JFrame {
     public javax.swing.JTextField urlBar;
     public javax.swing.JButton visualizeBtn;
     // End of variables declaration//GEN-END:variables
-    
- 
 
 }
