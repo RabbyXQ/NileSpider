@@ -1,4 +1,4 @@
 package nilespider.app.utils.crawlers;
 
-public class ImageCrawler {
+public class ImageValidator {
 }
