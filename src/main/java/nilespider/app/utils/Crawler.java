@@ -1,15 +1,6 @@
-package nilespider.app.utils;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
+import java.net.*;
+import java.io.*;
 
 public class Crawler {
     private Set<String> visitedUrls;
@@ -24,34 +15,31 @@ public class Crawler {
         this.baseUrl = baseUrl;
     }
 
-    public void crawl() {
-        if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
-            System.out.println("Invalid base URL. It should start with 'http://' or 'https://'.");
-            return;
-        }
+    public void crawl(String url) {
+        if (!visitedUrls.contains(url) && url.contains(baseUrl)) {
+            visitedUrls.add(url);
+            System.out.println("Crawling: " + url);
 
-        Queue<String> queue = new LinkedList<>();
-        queue.add(baseUrl);
+            if (searchStringFound(url)) {
+                System.out.println("String found on: " + url);
+                foundUrls.add(url);
+            }
 
-        while (!queue.isEmpty()) {
-            String currentUrl = queue.poll();
+            Set<String> internalUrls = extractInternalUrls(url);
+            Set<String> internalHyperlinks = extractInternalHyperlinks(url);
 
-            if (!visitedUrls.contains(currentUrl) && currentUrl.contains(baseUrl)) {
-                visitedUrls.add(currentUrl);
-                System.out.println("Crawling: " + currentUrl);
+            for (String internalUrl : internalUrls) {
+                crawl(internalUrl); // Recursively crawl internal URLs
+            }
 
-                if (searchStringFound(currentUrl)) {
-                    System.out.println("String found on: " + currentUrl);
-                    foundUrls.add(currentUrl);
-                }
-
-                Set<String> internalUrls = extractInternalUrls(currentUrl);
-                Set<String> internalHyperlinks = extractInternalHyperlinks(currentUrl);
-
-                queue.addAll(internalUrls);
-                queue.addAll(internalHyperlinks);
+            for (String hyperlink : internalHyperlinks) {
+                crawl(hyperlink); // Recursively crawl hyperlinks
             }
         }
+    }
+
+    public void crawl() {
+        crawl(baseUrl); // Start crawling from the base URL
     }
 
     public ArrayList<String> getFoundUrls() {
@@ -70,7 +58,7 @@ public class Crawler {
             while ((line = reader.readLine()) != null) {
                 if (line.contains("href=\"")) {
                     String href = line.split("href=\"")[1].split("\"")[0];
-                    if (href.startsWith("/") || href.startsWith(baseUrl)) {
+                    if (isValidUrl(href)) {
                         URL absoluteUrl = new URL(url, href);
                         internalUrls.add(absoluteUrl.toString());
                     }
@@ -97,7 +85,7 @@ public class Crawler {
             while ((line = reader.readLine()) != null) {
                 if (line.contains("<a ") && line.contains("href=\"")) {
                     String href = line.split("href=\"")[1].split("\"")[0];
-                    if (href.startsWith("/") || href.startsWith(baseUrl)) {
+                    if (isValidUrl(href)) {
                         URL absoluteUrl = new URL(url, href);
                         internalHyperlinks.add(absoluteUrl.toString());
                     }
@@ -140,6 +128,10 @@ public class Crawler {
         }
 
         return false;
+    }
+
+    private boolean isValidUrl(String url) {
+        return url.startsWith("/") || url.startsWith(baseUrl);
     }
 
     private HttpURLConnection openConnection(URL url) throws IOException {

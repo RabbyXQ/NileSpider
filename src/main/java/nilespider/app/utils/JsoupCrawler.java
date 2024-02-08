@@ -6,7 +6,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,32 +26,30 @@ public class JsoupCrawler {
         this.baseUrl = baseUrl;
     }
 
-    public void crawl() {
+    public void crawl(String url) {
         if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
             System.out.println("Invalid base URL. It should start with 'http://' or 'https://'.");
             return;
         }
 
-        Queue<String> queue = new LinkedList<>();
-        queue.add(baseUrl);
+        if (!visitedUrls.contains(url) && url.contains(baseUrl)) {
+            visitedUrls.add(url);
+            System.out.println("Crawling: " + url);
 
-        while (!queue.isEmpty()) {
-            String currentUrl = queue.poll();
+            if (searchStringFound(url)) {
+                System.out.println("String found on: " + url);
+                foundUrls.add(url);
+            }
 
-            if (!visitedUrls.contains(currentUrl) && currentUrl.contains(baseUrl)) {
-                visitedUrls.add(currentUrl);
-                System.out.println("Crawling: " + currentUrl);
+            Set<String> internalUrls = extractInternalUrls(url);
+            Set<String> internalHyperlinks = extractInternalHyperlinks(url);
 
-                if (searchStringFound(currentUrl)) {
-                    System.out.println("String found on: " + currentUrl);
-                    foundUrls.add(currentUrl);
-                }
+            for (String internalUrl : internalUrls) {
+                crawl(internalUrl); // Recursively crawl internal URLs
+            }
 
-                Set<String> internalUrls = extractInternalUrls(currentUrl);
-                Set<String> internalHyperlinks = extractInternalHyperlinks(currentUrl);
-
-                queue.addAll(internalUrls);
-                queue.addAll(internalHyperlinks);
+            for (String hyperlink : internalHyperlinks) {
+                crawl(hyperlink); // Recursively crawl hyperlinks
             }
         }
     }
@@ -76,7 +73,7 @@ public class JsoupCrawler {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error Occured");
+            System.out.println("Error Occurred");
         }
 
         return internalUrls;
@@ -119,11 +116,11 @@ public class JsoupCrawler {
     }
 
     public static void main(String[] args) {
-        String baseUrl = "https://vjghs.edu.bd";
-        String searchString = "Name";
+        String baseUrl = "https://gharoaa.com";
+        String searchString = "Email";
 
         JsoupCrawler jsoupCrawler = new JsoupCrawler(searchString, baseUrl);
-        jsoupCrawler.crawl();
+        jsoupCrawler.crawl(baseUrl); // Start crawling from the base URL
 
         ArrayList<String> foundUrls = jsoupCrawler.getFoundUrls();
         System.out.println("Found URLs:");

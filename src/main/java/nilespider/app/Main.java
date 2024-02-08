@@ -18,7 +18,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
-import nilespider.app.utils.Crawler;
 
 /**
  *
@@ -104,8 +103,13 @@ public class Main extends javax.swing.JFrame {
         crawlBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                crawlingMessage.setForeground(new Color(3, 119, 32));
+
                 baseUrl = urlBar.getText().toString().toLowerCase();
                 query = queryText.getText().toString().toLowerCase();
+                queryText.setEnabled(false);
+                urlBar.setEnabled(false);
+                crawlBtn.setText("Reset");
                 searchString = query;
                 if (!listModel.isEmpty()){
                     listModel.clear();
@@ -129,14 +133,18 @@ public class Main extends javax.swing.JFrame {
                 {
                     crawlingThread.stop();
                     isCrawlingRunning = false;
+                    dispose();
+                    new Main().setVisible(true);
                 }
-                crawlingThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        crawl();
+                if (crawlingThread!=null)
+                {
+                    try{
+                        crawlingThread.start();
+                    }catch (Exception exception)
+                    {
+                        System.out.println("An error occured.");
                     }
-                });
-                crawlingThread.start();
+                }
                 isCrawlingRunning = true;
             }
         });
@@ -147,7 +155,6 @@ public class Main extends javax.swing.JFrame {
                 System.out.println("Hello From Stop Button");
                     if (isCrawlingRunning){
                         crawlingThread.stop();
-                        isCrawlingRunning = false;
                     }
                     {
                         loadingBar.setValue(0);
@@ -509,7 +516,7 @@ public class Main extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
