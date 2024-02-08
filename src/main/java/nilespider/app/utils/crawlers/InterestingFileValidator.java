@@ -1,4 +1,4 @@
 package nilespider.app.utils.crawlers;
 
-public class InterestingFileCrawler {
+public class InterestingFileValidator {
 }
