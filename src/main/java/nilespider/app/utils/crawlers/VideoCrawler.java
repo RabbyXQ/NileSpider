@@ -1,4 +1,4 @@
 package nilespider.app.utils.crawlers;
 
-public class PDFValidator {
+public class VideoCrawler {
 }

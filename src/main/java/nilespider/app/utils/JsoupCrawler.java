@@ -13,8 +13,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
-public class JsoupCrawler {
+public class JsoupCrawler{
     private Set<String> visitedUrls;
+
     private String searchString;
     private ArrayList<String> foundUrls;
     private String baseUrl;
