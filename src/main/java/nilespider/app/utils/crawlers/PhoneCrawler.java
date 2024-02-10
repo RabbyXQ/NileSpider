@@ -1,4 +1,4 @@
 package nilespider.app.utils.crawlers;
 
-public class GeographicalValidator {
+public class PhoneCrawler {
 }

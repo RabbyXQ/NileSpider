@@ -374,10 +374,18 @@ public class Main extends javax.swing.JFrame {
                 loader +=5;
                 loadingBar.setValue(loader);
                 if (searchStringFound(currentUrl)) {
-                    System.out.println("String found on: " + currentUrl);
-                    crawlingMessage.setText("String found on: " + currentUrl);
-                    listModel.addElement(currentUrl);
-                    foundUrls.add(currentUrl);
+                   if (optionSelectorComboBox.getSelectedIndex() == 0)
+                   {
+                       System.out.println("String found on: " + currentUrl);
+                       crawlingMessage.setText("String found on: " + currentUrl);
+                       listModel.addElement(currentUrl);
+                       foundUrls.add(currentUrl);
+                   }else if(optionSelectorComboBox.getSelectedIndex() == 1)
+                   {
+
+                   } else if (optionSelectorComboBox.getSelectedIndex() == 2) {
+
+                   }
                 }
 
                 Set<String> internalUrls = extractInternalUrls(currentUrl);
@@ -491,6 +499,48 @@ public class Main extends javax.swing.JFrame {
 
     private void optionSelectorComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionSelectorComboBoxActionPerformed
         // TODO add your handling code here:
+        switch (optionSelectorComboBox.getSelectedIndex()){
+            case 0:
+                queryText.setEnabled(true);
+                System.out.println("Text Selected");
+                break;
+            case 1:
+                queryText.setEnabled(false);
+                System.out.println("Phone Selected");
+                break;
+            case 2:
+                queryText.setEnabled(false);
+                System.out.println("Email Selected");
+                break;
+            case 3:
+                queryText.setEnabled(false);
+                System.out.println("Geographic Information");
+                break;
+            case 4:
+                queryText.setEnabled(false);
+                System.out.println("Images");
+                break;
+            case 5:
+                queryText.setEnabled(false);
+                System.out.println("Videos");
+                break;
+            case 6:
+                queryText.setEnabled(true);
+                System.out.println("Pdfs");
+                break;
+            case 7:
+                queryText.setEnabled(true);
+                System.out.println("Other Files");
+                break;
+            case 8:
+                queryText.setEnabled(false);
+                System.out.println("Interesting Files");
+                break;
+            default:
+                queryText.setEnabled(true);
+                System.out.println("G");
+                break;
+        }
     }//GEN-LAST:event_optionSelectorComboBoxActionPerformed
 
     private void visualizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualizeBtnActionPerformed

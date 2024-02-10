@@ -1,4 +1,4 @@
-package nilespider.app.utils.crawlers;
+package nilespider.app.utils.validators;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
