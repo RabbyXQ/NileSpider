@@ -1,3 +1,4 @@
+![nile_spider](https://github.com/RabbyXQ/NileSpider/assets/16121868/5a11ac6a-2cd0-4f5e-b528-0de037b4596c)
 #Project Overview:
 
 NileSpider is a powerful and versatile web crawler designed to extract a wide range of information from the web, including textual data, images, videos, audio, PDFs, and other files with unknown extensions. It provides users with a comprehensive set of features to search, save, download, and visualize the data.
