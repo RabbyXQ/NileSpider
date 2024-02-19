@@ -36,6 +36,8 @@ public class Main extends javax.swing.JFrame {
     private boolean isCrawlingRunning = false;
     private Thread crawlingThread;
     private Runnable crawlingRunnable;
+
+    public int comboBoxValue = 0;
     private static ArrayList<String> foundUrls = new ArrayList<>();
 
     /**
@@ -382,7 +384,9 @@ public class Main extends javax.swing.JFrame {
                        foundUrls.add(currentUrl);
                    }else if(optionSelectorComboBox.getSelectedIndex() == 1)
                    {
-
+                       System.out.println("Email found on: " + currentUrl);
+                       listModel.addElement(currentUrl);
+                       foundUrls.add(currentUrl);
                    } else if (optionSelectorComboBox.getSelectedIndex() == 2) {
 
                    }
@@ -503,42 +507,52 @@ public class Main extends javax.swing.JFrame {
             case 0:
                 queryText.setEnabled(true);
                 System.out.println("Text Selected");
+                comboBoxValue = 0;
                 break;
             case 1:
                 queryText.setEnabled(false);
+                comboBoxValue = 1;
                 System.out.println("Phone Selected");
                 break;
             case 2:
                 queryText.setEnabled(false);
+                comboBoxValue = 2;
                 System.out.println("Email Selected");
                 break;
             case 3:
                 queryText.setEnabled(false);
                 System.out.println("Geographic Information");
+                comboBoxValue = 3;
                 break;
             case 4:
                 queryText.setEnabled(false);
                 System.out.println("Images");
+                comboBoxValue = 4;
                 break;
             case 5:
                 queryText.setEnabled(false);
                 System.out.println("Videos");
+                comboBoxValue = 5;
                 break;
             case 6:
                 queryText.setEnabled(true);
                 System.out.println("Pdfs");
+                comboBoxValue = 6;
                 break;
             case 7:
                 queryText.setEnabled(true);
                 System.out.println("Other Files");
+                comboBoxValue = 7;
                 break;
             case 8:
                 queryText.setEnabled(false);
                 System.out.println("Interesting Files");
+                comboBoxValue = 8;
                 break;
             default:
                 queryText.setEnabled(true);
                 System.out.println("G");
+                comboBoxValue = 0;
                 break;
         }
     }//GEN-LAST:event_optionSelectorComboBoxActionPerformed
