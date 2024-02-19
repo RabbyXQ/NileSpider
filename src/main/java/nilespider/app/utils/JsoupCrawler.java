@@ -13,7 +13,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
-public class JsoupCrawler{
+
+public class JsoupCrawler {
     private Set<String> visitedUrls;
 
     private String searchString;
@@ -117,8 +118,8 @@ public class JsoupCrawler{
     }
 
     public static void main(String[] args) {
-        String baseUrl = "https://gharoaa.com";
-        String searchString = "Email";
+        String baseUrl = "https://bbhss.vercel.app";
+        String searchString = "0192";
 
         JsoupCrawler jsoupCrawler = new JsoupCrawler(searchString, baseUrl);
         jsoupCrawler.crawl(baseUrl); // Start crawling from the base URL
