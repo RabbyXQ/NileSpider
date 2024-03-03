@@ -1,5 +1,7 @@
-package nilespider.app.utils;
+package nilespider.app.utils.models;
 
+
+import nilespider.app.Main;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,24 +11,25 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static nilespider.app.Main.listModel;
 
-public class JsoupCrawler {
+public class EmailCrawler {
     private Set<String> visitedUrls;
 
-    private String searchString;
-    private ArrayList<String> foundUrls;
     private String baseUrl;
+    private ArrayList<String> foundEmails;
 
-    public JsoupCrawler(String searchString, String baseUrl) {
+    public EmailCrawler(String baseUrl) {
         this.visitedUrls = new HashSet<>();
-        this.searchString = searchString;
-        this.foundUrls = new ArrayList<>();
         this.baseUrl = baseUrl;
+        this.foundEmails = new ArrayList<>();
     }
+
+    static int i = 1;
 
     public void crawl(String url) {
         if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
@@ -36,12 +39,11 @@ public class JsoupCrawler {
 
         if (!visitedUrls.contains(url) && url.contains(baseUrl)) {
             visitedUrls.add(url);
+            Main.loadingBar.setValue(i += 1);
+            Main.crawlingMessage.setText("Crawling: " + url);
             System.out.println("Crawling: " + url);
 
-            if (searchStringFound(url)) {
-                System.out.println("String found on: " + url);
-                foundUrls.add(url);
-            }
+            findEmails(url);
 
             Set<String> internalUrls = extractInternalUrls(url);
             Set<String> internalHyperlinks = extractInternalHyperlinks(url);
@@ -56,8 +58,28 @@ public class JsoupCrawler {
         }
     }
 
-    public ArrayList<String> getFoundUrls() {
-        return foundUrls;
+    private void findEmails(String url) {
+        try {
+            Document document = Jsoup.connect(url).get();
+            String text = document.text();
+
+            // Split the text by space, newlines, and common email delimiters
+            String[] tokens = text.split("[\\s@.]+");
+
+            for (String token : tokens) {
+                if (isEmail(token)) {
+                    foundEmails.add(token);
+                    Main.crawlingMessage.setText("Email " + token+"\n"+" has been fount at url: "+ url);
+                    listModel.addElement("Email: " + token+"\n"+"Url: "+ url);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error occurred while crawling " + url);
+        }
+    }
+
+    public ArrayList<String> getFoundEmails() {
+        return foundEmails;
     }
 
     private Set<String> extractInternalUrls(String currentUrl) {
@@ -75,7 +97,7 @@ public class JsoupCrawler {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error Occurred");
+            System.out.println("Error occurred while extracting internal URLs from " + currentUrl);
         }
 
         return internalUrls;
@@ -96,38 +118,18 @@ public class JsoupCrawler {
                 }
             }
         } catch (Exception e) {
-            System.out.println("URL is not valid");
+            System.out.println("Error occurred while extracting internal hyperlinks from " + currentUrl);
         }
 
         return internalHyperlinks;
     }
+    public boolean isEmail(String email) {
+        // Regular expression for a valid email address
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
-    private boolean searchStringFound(String url) {
-        try {
-            Document document = Jsoup.connect(url).get();
-            String text = document.text();
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
 
-            if (text.contains(searchString)) {
-                return true;
-            }
-        } catch (IOException e) {
-            System.out.println("URL is not valid");
-        }
-
-        return false;
-    }
-
-    public static void main(String[] args) {
-        String baseUrl = "https://bbhss.vercel.app";
-        String searchString = "0192";
-
-        JsoupCrawler jsoupCrawler = new JsoupCrawler(searchString, baseUrl);
-        jsoupCrawler.crawl(baseUrl); // Start crawling from the base URL
-
-        ArrayList<String> foundUrls = jsoupCrawler.getFoundUrls();
-        System.out.println("Found URLs:");
-        for (String foundUrl : foundUrls) {
-            System.out.println(foundUrl);
-        }
+        return matcher.matches();
     }
 }

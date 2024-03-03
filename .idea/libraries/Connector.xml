@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Connector">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/main/java/nilespider/app/http/connector/Connector.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
