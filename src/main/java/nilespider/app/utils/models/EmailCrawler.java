@@ -131,10 +131,4 @@ public class EmailCrawler {
         return url;
     }
 
-    public static void main(String[] args) {
-        // Example usage
-        String baseUrl = "https://gharoaa.com"; // Change this to your desired base URL
-        EmailCrawler crawler = new EmailCrawler(baseUrl);
-        crawler.crawl(baseUrl);
-    }
 }

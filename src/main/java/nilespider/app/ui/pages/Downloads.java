@@ -1,2 +1,4 @@
-package nilespider.app.ui.pages;public class Downloads {
+package nilespider.app.ui.pages;
+
+public class Downloads {
 }

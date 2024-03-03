@@ -5,10 +5,7 @@
  */
 package nilespider.app;
 
-import nilespider.app.utils.controllers.BasicCrawlerController;
-import nilespider.app.utils.controllers.EmailCrawlerController;
-import nilespider.app.utils.models.BasicCrawler;
-import nilespider.app.utils.models.EmailCrawler;
+import nilespider.app.utils.controllers.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -16,12 +13,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
 
 
 /**
@@ -31,9 +23,6 @@ import java.util.*;
 public class Main extends javax.swing.JFrame {
     public static String query;
     public static DefaultListModel<String> listModel;
-    private Set<String> visitedUrls;
-    private String searchString;
-    private String baseUrl;
     private boolean loadingBarVisibility = false;
     private boolean actionBtnVisibility = false;
     private boolean isCrawlingRunning = false;
@@ -56,8 +45,6 @@ public class Main extends javax.swing.JFrame {
      */
 
     private void initComponents() {
-        this.visitedUrls = new HashSet<>();
-        this.searchString = query;
         listModel = new DefaultListModel<>();
         urlBar = new javax.swing.JTextField();
         crawlBtn = new javax.swing.JButton();
@@ -99,16 +86,19 @@ public class Main extends javax.swing.JFrame {
         loadingBar.hide();
         crawlingThread = new BasicCrawlerController();
         emailCrawlerThread = new EmailCrawlerController();
+        PhoneNumberCrawlerController phoneNumberCrawlerController = new PhoneNumberCrawlerController();
+        GeographicCrawlerController geographicCrawlerController = new GeographicCrawlerController();
+        ImageCrawlerController imageCrawlerController = new ImageCrawlerController();
+        VideoCrawlerController  videoCrawlerController = new VideoCrawlerController();
+        PDFCrawlerController pdfCrawlerController = new PDFCrawlerController();
         crawlBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 crawlingMessage.setForeground(new Color(3, 119, 32));
-                baseUrl = urlBar.getText().toString().toLowerCase();
                 query = queryText.getText().toString().toLowerCase();
                 queryText.setEnabled(false);
                 urlBar.setEnabled(false);
                 crawlBtn.setText("Reset");
-                searchString = query;
                 if (!listModel.isEmpty()){
                     listModel.clear();
                 }
@@ -135,6 +125,17 @@ public class Main extends javax.swing.JFrame {
                     } else if (optionSelectorComboBox.getSelectedIndex() == 2) {
 
                         emailCrawlerThread.stop();
+                    } else if (optionSelectorComboBox.getSelectedIndex() == 1) {
+
+                        phoneNumberCrawlerController.stop();
+                    } else if (optionSelectorComboBox.getSelectedIndex() == 3) {
+                        geographicCrawlerController.stop();
+                    } else if (optionSelectorComboBox.getSelectedIndex() == 4) {
+                        imageCrawlerController.stop();
+                    } else if (optionSelectorComboBox.getSelectedIndex() == 5) {
+                        videoCrawlerController.stop();
+                    } else if (optionSelectorComboBox.getSelectedIndex() == 6) {
+                        pdfCrawlerController.stop();
                     }
                     isCrawlingRunning = false;
                     dispose();
@@ -143,10 +144,20 @@ public class Main extends javax.swing.JFrame {
                 if (optionSelectorComboBox.getSelectedIndex() == 0)
                 {
                     crawlingThread.start();
-                }
-                else if(optionSelectorComboBox.getSelectedIndex() == 2 )
+                } else if (optionSelectorComboBox.getSelectedIndex() == 1) {
+                    phoneNumberCrawlerController.start();
+
+                } else if(optionSelectorComboBox.getSelectedIndex() == 2 )
                 {
                     emailCrawlerThread.start();
+                } else if (optionSelectorComboBox.getSelectedIndex() == 3) {
+                    geographicCrawlerController.start();
+                } else if (optionSelectorComboBox.getSelectedIndex() == 4) {
+                    imageCrawlerController.start();
+                } else if (optionSelectorComboBox.getSelectedIndex() == 5) {
+                    videoCrawlerController.start();
+                } else if (optionSelectorComboBox.getSelectedIndex() == 6) {
+                    pdfCrawlerController.start();
                 }
                 isCrawlingRunning = true;
             }
@@ -383,7 +394,7 @@ public class Main extends javax.swing.JFrame {
                 System.out.println("Videos");
                 break;
             case 6:
-                queryText.setEnabled(true);
+                queryText.setEnabled(false);
                 System.out.println("Pdfs");
                 break;
             case 7:
