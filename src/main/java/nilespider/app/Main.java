@@ -81,14 +81,6 @@ public class Main extends javax.swing.JFrame {
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         downloadsMenuItem = new javax.swing.JMenu();
-        crawlingRunnable = new Runnable() {
-            @Override
-            public void run() {
-
-                BasicCrawler basicCrawler = new BasicCrawler(queryText.getText().toString(), urlBar.getText().toString());
-                basicCrawler.crawl(urlBar.getText().toString());
-            }
-        };
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,7 +97,7 @@ public class Main extends javax.swing.JFrame {
         crawlBtn.setText("Crawl");
         loadingBar.hide();
 
-        crawlingThread = new BasicCrawlerController(optionSelectorComboBox.getSelectedIndex());
+        crawlingThread = new BasicCrawlerController();
         crawlBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
