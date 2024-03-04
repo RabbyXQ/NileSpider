@@ -3,25 +3,19 @@ package nilespider.app.ui.pages;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class History {
-}
-class Items<T> implements Serializable
-{
-    private ArrayList<T> historyList;
+public class History implements Serializable{
+    public static ArrayList<String> historyList;
 
-    void addHistory(T item)
+    void addHistory(String item)
     {
         historyList.add(item);
     }
-    T getHistoryAt(int index)
+    public static String getHistoryAt(int index)
     {
         return historyList.get(index);
     }
-    public ArrayList<T> getHistoryList() {
+    public static ArrayList<String> getHistoryList() {
         return historyList;
     }
 
-    public void setHistoryList(ArrayList<T> historyList) {
-        this.historyList = historyList;
-    }
 }

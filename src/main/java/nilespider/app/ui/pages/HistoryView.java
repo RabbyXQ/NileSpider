@@ -29,6 +29,9 @@ public class HistoryView {
 
         // History List
         listModel = new DefaultListModel<>();
+        for (String data: History.historyList){
+            listModel.addElement(data);
+        }
         historyList = new JList<>(listModel);
         listScrollPane = new JScrollPane(historyList);
         frame.add(listScrollPane, BorderLayout.CENTER);
