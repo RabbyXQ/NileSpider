@@ -91,6 +91,7 @@ public class Main extends javax.swing.JFrame {
         ImageCrawlerController imageCrawlerController = new ImageCrawlerController();
         VideoCrawlerController  videoCrawlerController = new VideoCrawlerController();
         PDFCrawlerController pdfCrawlerController = new PDFCrawlerController();
+        OtherDocumentCrawlerController otherDocumentCrawlerController = new OtherDocumentCrawlerController();
         crawlBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,6 +137,9 @@ public class Main extends javax.swing.JFrame {
                         videoCrawlerController.stop();
                     } else if (optionSelectorComboBox.getSelectedIndex() == 6) {
                         pdfCrawlerController.stop();
+                    }else if(optionSelectorComboBox.getSelectedIndex() == 7)
+                    {
+                        otherDocumentCrawlerController.stop();
                     }
                     isCrawlingRunning = false;
                     dispose();
@@ -158,6 +162,9 @@ public class Main extends javax.swing.JFrame {
                     videoCrawlerController.start();
                 } else if (optionSelectorComboBox.getSelectedIndex() == 6) {
                     pdfCrawlerController.start();
+                }else if(optionSelectorComboBox.getSelectedIndex() == 7)
+                {
+                    otherDocumentCrawlerController.start();
                 }
                 isCrawlingRunning = true;
             }
