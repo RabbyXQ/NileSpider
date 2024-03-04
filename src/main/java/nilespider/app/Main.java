@@ -5,6 +5,8 @@
  */
 package nilespider.app;
 
+import nilespider.app.ui.pages.History;
+import nilespider.app.ui.pages.HistoryView;
 import nilespider.app.utils.controllers.*;
 import nilespider.app.utils.models.InterestingFileCrawler;
 
@@ -433,6 +435,8 @@ public class Main extends javax.swing.JFrame {
 
     private void historyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_historyBtnActionPerformed
         // TODO add your handling code here:
+        HistoryView historyView = new HistoryView();
+        historyView.getFrame().setVisible(true);
     }//GEN-LAST:event_historyBtnActionPerformed
 
     private void queryTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_queryTextActionPerformed
