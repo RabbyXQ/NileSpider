@@ -6,6 +6,7 @@
 package nilespider.app;
 
 import nilespider.app.utils.controllers.*;
+import nilespider.app.utils.models.InterestingFileCrawler;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -92,6 +93,7 @@ public class Main extends javax.swing.JFrame {
         VideoCrawlerController  videoCrawlerController = new VideoCrawlerController();
         PDFCrawlerController pdfCrawlerController = new PDFCrawlerController();
         OtherDocumentCrawlerController otherDocumentCrawlerController = new OtherDocumentCrawlerController();
+        InterestingFileCrawlerController interestingFileCrawlerController = new InterestingFileCrawlerController();
         crawlBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -140,6 +142,9 @@ public class Main extends javax.swing.JFrame {
                     }else if(optionSelectorComboBox.getSelectedIndex() == 7)
                     {
                         otherDocumentCrawlerController.stop();
+                    }else if(optionSelectorComboBox.getSelectedIndex() == 8)
+                    {
+                        interestingFileCrawlerController.stop();
                     }
                     isCrawlingRunning = false;
                     dispose();
@@ -165,6 +170,9 @@ public class Main extends javax.swing.JFrame {
                 }else if(optionSelectorComboBox.getSelectedIndex() == 7)
                 {
                     otherDocumentCrawlerController.start();
+                }else if(optionSelectorComboBox.getSelectedIndex() == 8)
+                {
+                    interestingFileCrawlerController.start();
                 }
                 isCrawlingRunning = true;
             }
