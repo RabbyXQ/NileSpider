@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nilespider.app;
 
 import nilespider.app.ui.pages.History;
@@ -11,6 +6,7 @@ import nilespider.app.utils.controllers.*;
 import nilespider.app.utils.models.InterestingFileCrawler;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -18,12 +14,30 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-
-/**
- *
- * @author macbook
- */
 public class Main extends javax.swing.JFrame {
+    public JButton crawlBtn;
+    public static JLabel crawlingMessage;
+    public JMenu downloadsMenuItem;
+    public JButton historyBtn;
+    private JLabel jLabel1;
+    private JLabel jLabel2;
+    private JLabel jLabel3;
+    private JMenu jMenu1;
+    private JMenuBar jMenuBar1;
+    private JScrollPane jScrollPane1;
+    public JMenuItem loadMenuItem;
+    public static JProgressBar loadingBar;
+    public JComboBox<String> optionSelectorComboBox;
+    public JToggleButton pauseBtn;
+    public static JTextField queryText;
+    public JList<String> resultListMain;
+    public JMenuItem saveAsMenuItem;
+    public JMenuItem saveMenuItem;
+    public JButton stopBtn;
+    public JLabel thresholdPercent;
+    public JSlider thresholdSlider;
+    public static JTextField urlBar;
+    public JButton visualizeBtn;
     public static String query;
     public static DefaultListModel<String> listModel;
     private boolean loadingBarVisibility = false;
@@ -31,8 +45,6 @@ public class Main extends javax.swing.JFrame {
     private boolean isCrawlingRunning = false;
     private Thread crawlingThread;
     private Thread emailCrawlerThread;
-    private Runnable crawlingRunnable;
-    private static ArrayList<String> foundUrls = new ArrayList<>();
 
     public Main() {
         initComponents();
@@ -40,33 +52,33 @@ public class Main extends javax.swing.JFrame {
 
     private void initComponents() {
         listModel = new DefaultListModel<>();
-        urlBar = new javax.swing.JTextField();
-        crawlBtn = new javax.swing.JButton();
-        optionSelectorComboBox = new javax.swing.JComboBox<>();
-        jLabel1 = new javax.swing.JLabel();
-        thresholdSlider = new javax.swing.JSlider();
-        jLabel2 = new javax.swing.JLabel();
-        thresholdPercent = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        resultListMain = new javax.swing.JList<>();
-        visualizeBtn = new javax.swing.JButton();
-        historyBtn = new javax.swing.JButton();
-        loadingBar = new javax.swing.JProgressBar();
-        queryText = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        crawlingMessage = new javax.swing.JLabel();
-        pauseBtn = new javax.swing.JToggleButton();
-        stopBtn = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        loadMenuItem = new javax.swing.JMenuItem();
-        saveMenuItem = new javax.swing.JMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
-        downloadsMenuItem = new javax.swing.JMenu();
+        urlBar = new JTextField();
+        crawlBtn = new JButton();
+        optionSelectorComboBox = new JComboBox<>();
+        jLabel1 = new JLabel();
+        thresholdSlider = new JSlider();
+        jLabel2 = new JLabel();
+        thresholdPercent = new JLabel();
+        jScrollPane1 = new JScrollPane();
+        resultListMain = new JList<>();
+        visualizeBtn = new JButton();
+        historyBtn = new JButton();
+        loadingBar = new JProgressBar();
+        queryText = new JTextField();
+        jLabel3 = new JLabel();
+        crawlingMessage = new JLabel();
+        pauseBtn = new JToggleButton();
+        stopBtn = new JButton();
+        jMenuBar1 = new JMenuBar();
+        jMenu1 = new JMenu();
+        loadMenuItem = new JMenuItem();
+        saveMenuItem = new JMenuItem();
+        saveAsMenuItem = new JMenuItem();
+        downloadsMenuItem = new JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        urlBar.setFont(new java.awt.Font("Helvetica", 0, 13)); // NOI18N
+        urlBar.setFont(new java.awt.Font("Helvetica", 0, 13));
         urlBar.setText("https://");
         urlBar.setActionCommand("<Not Set>");
         urlBar.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 3, true));
@@ -92,7 +104,7 @@ public class Main extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 crawlingMessage.setForeground(new Color(3, 119, 32));
                 query = queryText.getText().toString().toLowerCase();
-                History.historyList.add(query);
+                //History.historyList.add(query);
                 queryText.setEnabled(false);
                 urlBar.setEnabled(false);
                 crawlBtn.setText("Reset");
@@ -190,9 +202,9 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        optionSelectorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Text", "Phone", "Email", "Geographic Information", "Images", "Videos", "PDFs", "Other Docs", "Interesting Files" }));
-        optionSelectorComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        optionSelectorComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Text", "Phone", "Email", "Geographic Information", "Images", "Videos", "PDFs", "Other Docs", "Interesting Files" }));
+        optionSelectorComboBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 optionSelectorComboBoxActionPerformed(evt);
             }
         });
@@ -209,12 +221,8 @@ public class Main extends javax.swing.JFrame {
         thresholdSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                // This method will be called whenever the value of the JSlider changes
                 int sliderValue = thresholdSlider.getValue();
                 thresholdPercent.setText(sliderValue+"%");
-
-                // Perform any action you want based on the slider value
-                // For example, update a label, perform a calculation, etc.
             }
         });
 
@@ -222,22 +230,22 @@ public class Main extends javax.swing.JFrame {
         jScrollPane1.setViewportView(resultListMain);
 
         visualizeBtn.setText("Visualize");
-        visualizeBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        visualizeBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 visualizeBtnActionPerformed(evt);
             }
         });
 
         historyBtn.setText("History");
-        historyBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        historyBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 historyBtnActionPerformed(evt);
             }
         });
 
-        queryText.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 153), 3, true));
-        queryText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        queryText.setBorder(new LineBorder(new java.awt.Color(0, 153, 153), 3, true));
+        queryText.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 queryTextActionPerformed(evt);
             }
         });
@@ -247,8 +255,8 @@ public class Main extends javax.swing.JFrame {
         crawlingMessage.setForeground(new java.awt.Color(51, 204, 0));
 
         pauseBtn.setText("Pause");
-        pauseBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        pauseBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 pauseBtnActionPerformed(evt);
             }
         });
@@ -261,8 +269,8 @@ public class Main extends javax.swing.JFrame {
         jMenu1.add(loadMenuItem);
 
         saveMenuItem.setText("Save");
-        saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        saveMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 saveMenuItemActionPerformed(evt);
             }
         });
@@ -279,7 +287,7 @@ public class Main extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -368,15 +376,14 @@ public class Main extends javax.swing.JFrame {
         );
 
         setBounds(0, 0, 878, 605);
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
 
-    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_saveMenuItemActionPerformed
+    private void saveMenuItemActionPerformed(ActionEvent evt) {
 
-    private void optionSelectorComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionSelectorComboBoxActionPerformed
-        // TODO add your handling code here:
+    }
+
+    private void optionSelectorComboBoxActionPerformed(ActionEvent evt) {
         switch (optionSelectorComboBox.getSelectedIndex()){
             case 0:
                 queryText.setEnabled(true);
@@ -419,85 +426,29 @@ public class Main extends javax.swing.JFrame {
                 System.out.println("G");
                 break;
         }
-    }//GEN-LAST:event_optionSelectorComboBoxActionPerformed
+    }
 
-    private void visualizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualizeBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_visualizeBtnActionPerformed
+    private void visualizeBtnActionPerformed(java.awt.event.ActionEvent evt) {
 
-    private void historyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_historyBtnActionPerformed
-        // TODO add your handling code here:
+    }
+
+    private void historyBtnActionPerformed(ActionEvent evt) {
         HistoryView historyView = new HistoryView();
         historyView.getFrame().setVisible(true);
-    }//GEN-LAST:event_historyBtnActionPerformed
+    }
 
-    private void queryTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_queryTextActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_queryTextActionPerformed
+    private void queryTextActionPerformed(ActionEvent evt) {
+    }
 
-    private void pauseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_pauseBtnActionPerformed
+    private void pauseBtnActionPerformed(ActionEvent evt) {
+    }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Main().setVisible(true);
             }
         });
     }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton crawlBtn;
-    public static javax.swing.JLabel crawlingMessage;
-    public javax.swing.JMenu downloadsMenuItem;
-    public javax.swing.JButton historyBtn;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JMenuItem loadMenuItem;
-    public static javax.swing.JProgressBar loadingBar;
-    public javax.swing.JComboBox<String> optionSelectorComboBox;
-    public javax.swing.JToggleButton pauseBtn;
-    public static javax.swing.JTextField queryText;
-    public javax.swing.JList<String> resultListMain;
-    public javax.swing.JMenuItem saveAsMenuItem;
-    public javax.swing.JMenuItem saveMenuItem;
-    public javax.swing.JButton stopBtn;
-    public javax.swing.JLabel thresholdPercent;
-    public javax.swing.JSlider thresholdSlider;
-    public static javax.swing.JTextField urlBar;
-    public javax.swing.JButton visualizeBtn;
-    // End of variables declaration//GEN-END:variables
 
 }
