@@ -1,21 +1,30 @@
 package nilespider.app;
 
+
+import nilespider.app.ui.pages.Downloads;
 import nilespider.app.ui.pages.History;
 import nilespider.app.ui.pages.HistoryView;
 import nilespider.app.utils.controllers.*;
-import nilespider.app.utils.models.InterestingFileCrawler;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Main extends javax.swing.JFrame {
+public class Main extends JFrame {
     public JButton crawlBtn;
+    public static History history;
+    public Downloads downloads;
     public static JLabel crawlingMessage;
     public JMenu downloadsMenuItem;
     public JButton historyBtn;
@@ -75,19 +84,28 @@ public class Main extends javax.swing.JFrame {
         saveMenuItem = new JMenuItem();
         saveAsMenuItem = new JMenuItem();
         downloadsMenuItem = new JMenu();
+        downloads = new Downloads();
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        urlBar.setFont(new java.awt.Font("Helvetica", 0, 13));
+        urlBar.setFont(new Font("Helvetica", 0, 13));
         urlBar.setText("https://");
         urlBar.setActionCommand("<Not Set>");
-        urlBar.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 3, true));
+        urlBar.setBorder(new LineBorder(new Color(0, 102, 102), 3, true));
         {
             visualizeBtn.hide();
             pauseBtn.hide();
             stopBtn.hide();
         }
-        crawlBtn.setFont(new java.awt.Font("Helvetica", 0, 13)); // NOI18N
+        History.loadHistory("history.dat");
+        if (new File("history.dat").exists()) {
+            History.loadHistory("history.dat");
+        } else {
+            History.saveHistory("history.dat");
+        }
+        History.loadHistory("history.dat");
+        History.addHistory("URL: " + urlBar.getText().toString() + "Query: " + query);
+        History.saveHistory("history.dat");
+        crawlBtn.setFont(new Font("Helvetica", 0, 13)); // NOI18N
         crawlBtn.setText("Crawl");
         loadingBar.hide();
         crawlingThread = new BasicCrawlerController();
@@ -209,15 +227,50 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setForeground(new java.awt.Color(51, 153, 0));
+        jLabel1.setForeground(new Color(51, 153, 0));
         jLabel1.setText("Select Data Type");
 
-        jLabel2.setForeground(new java.awt.Color(102, 153, 0));
+        jLabel2.setForeground(new Color(102, 153, 0));
         jLabel2.setText("Threshold");
 
-        thresholdPercent.setForeground(new java.awt.Color(51, 153, 0));
+        thresholdPercent.setForeground(new Color(51, 153, 0));
         thresholdPercent.setText("50%");
+        resultListMain.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) { // Double click detected
+                    int index = resultListMain.locationToIndex(e.getPoint());
+                    if (index != -1) {
+                        String selectedItem = listModel.getElementAt(index);
+                        if (optionSelectorComboBox.getSelectedIndex() != 0)
+                        {
+                            String url = extractURLs(selectedItem);
+                            downloads.addToDownloads(url, "/Users/macbook/Downloads");
+                        }
+                    }
+                }
+            }
 
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
         thresholdSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -243,7 +296,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        queryText.setBorder(new LineBorder(new java.awt.Color(0, 153, 153), 3, true));
+        queryText.setBorder(new LineBorder(new Color(0, 153, 153), 3, true));
         queryText.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 queryTextActionPerformed(evt);
@@ -252,7 +305,7 @@ public class Main extends javax.swing.JFrame {
 
         jLabel3.setText("Query");
 
-        crawlingMessage.setForeground(new java.awt.Color(51, 204, 0));
+        crawlingMessage.setForeground(new Color(51, 204, 0));
 
         pauseBtn.setText("Pause");
         pauseBtn.addActionListener(new ActionListener() {
@@ -283,6 +336,22 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         downloadsMenuItem.setText("Downloads");
+        downloadsMenuItem.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                downloads.getFrame().setVisible(true);
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+
+            }
+        });
         jMenuBar1.add(downloadsMenuItem);
 
         setJMenuBar(jMenuBar1);
@@ -290,89 +359,89 @@ public class Main extends javax.swing.JFrame {
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane1, GroupLayout.Alignment.TRAILING)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                         .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(urlBar, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                .addComponent(urlBar, GroupLayout.PREFERRED_SIZE, 367, GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                 .addComponent(jLabel3))
                                                         .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(optionSelectorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                .addComponent(optionSelectorComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                                                 .addComponent(queryText)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(crawlBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(crawlBtn, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE))
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addGap(106, 106, 106)
-                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                                                         .addGroup(layout.createSequentialGroup()
                                                                                 .addComponent(jLabel2)
-                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                                 .addComponent(thresholdPercent))
-                                                                        .addComponent(thresholdSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                        .addComponent(thresholdSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                                                 .addGap(0, 0, Short.MAX_VALUE))))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addContainerGap()
                                                 .addComponent(jLabel1)
                                                 .addGap(369, 369, 369)
-                                                .addComponent(pauseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(pauseBtn, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(stopBtn)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(visualizeBtn)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(historyBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(historyBtn, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap())
-                        .addComponent(loadingBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(loadingBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(crawlingMessage)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(loadingBar, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(crawlBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-                                                .addComponent(urlBar, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(loadingBar, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(crawlBtn, GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                                                .addComponent(urlBar, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(queryText))
                                         .addComponent(jLabel3))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(21, 21, 21)
                                                 .addComponent(jLabel1)
                                                 .addGap(4, 4, 4))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                         .addComponent(pauseBtn)
                                                         .addComponent(visualizeBtn)
                                                         .addComponent(stopBtn)
                                                         .addComponent(historyBtn))))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(1, 1, 1)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                         .addComponent(jLabel2)
                                                         .addComponent(thresholdPercent))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(thresholdSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(thresholdSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(optionSelectorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(optionSelectorComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(crawlingMessage)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
         );
 
         setBounds(0, 0, 878, 605);
@@ -428,7 +497,7 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
-    private void visualizeBtnActionPerformed(java.awt.event.ActionEvent evt) {
+    private void visualizeBtnActionPerformed(ActionEvent evt) {
 
     }
 
@@ -444,11 +513,19 @@ public class Main extends javax.swing.JFrame {
     }
 
     public static void main(String args[]) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Main().setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> new Main().setVisible(true));
     }
-
+    public String extractURLs(String text) {
+        // Regular expression for detecting URLs
+        String regex = "\\bhttps?://\\S+\\b";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        String url = "";
+        // Iterate through matches and print URLs
+        while (matcher.find()) {
+            url = matcher.group();
+            System.out.println("URL: " + url);
+        }
+        return url;
+    }
 }
