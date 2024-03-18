@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 
 public class Main extends JFrame {
     public JButton crawlBtn;
-    public static History history;
     public Downloads downloads;
     public static JLabel crawlingMessage;
     public JMenu downloadsMenuItem;

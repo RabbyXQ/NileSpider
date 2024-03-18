@@ -93,14 +93,17 @@ public class GraphVisualization extends JPanel {
     }
 
     public static void main(String[] args) {
-        GraphVisualization graph = new GraphVisualization(6);
+        GraphVisualization graph = new GraphVisualization(10);
         graph.addEdge(0, 1);
         graph.addEdge(0, 2);
         graph.addEdge(1, 3);
         graph.addEdge(2, 4);
         graph.addEdge(3, 5);
         graph.addEdge(4, 5);
-
+        graph.addEdge(5,6);
+        graph.addEdge(6, 7);
+        graph.addEdge(7, 8);
+        graph.addEdge(8, 0);
         JScrollPane scrollPane = new JScrollPane(graph);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);

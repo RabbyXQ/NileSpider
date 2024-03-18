@@ -247,14 +247,12 @@ public class Downloads {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
             DownloadItem downloadItem = (DownloadItem) value;
             int progress = downloadItem.getProgress();
             JProgressBar progressBar = progressBarMap.computeIfAbsent(index, k -> new JProgressBar(0, 100));
             progressBar.setValue(progress);
             progressBar.setString(progress + "%");
             progressBar.setStringPainted(true);
-
             JPanel panel = new JPanel(new BorderLayout());
             panel.add(label, BorderLayout.WEST);
             if (!downloadItem.isDownloaded()) {
