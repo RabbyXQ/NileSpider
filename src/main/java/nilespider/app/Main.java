@@ -237,7 +237,7 @@ public class Main extends JFrame {
         resultListMain.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) { // Double click detected
+                if (e.getClickCount() == 2 && optionSelectorComboBox.getSelectedIndex() == 4) { // Double click detected
                     int index = resultListMain.locationToIndex(e.getPoint());
                     if (index != -1) {
                         String selectedItem = listModel.getElementAt(index);
