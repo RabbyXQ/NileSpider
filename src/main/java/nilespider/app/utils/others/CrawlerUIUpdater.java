@@ -6,8 +6,7 @@ import static nilespider.app.Main.listModel;
 
 public class CrawlerUIUpdater {
     private int LOADING_BAR_VALUE = 1;
-    public void updateUI(String message, String url, boolean found)
-    {
+    public void updateUI(String message, String url, boolean found) {
         if(url.length() > 0){
             Main.loadingBar.setValue(LOADING_BAR_VALUE++);
         }
@@ -23,6 +22,28 @@ public class CrawlerUIUpdater {
         listModel.addElement(message+geoinfo+"\n"+url.toString().toLowerCase());
     }
     public void imageFoundUpdateUI(String message, String url) {
+        Main.crawlingMessage.setText(message+url);
+        Main.loadingBar.setValue(LOADING_BAR_VALUE++);
+        listModel.addElement(message+ url.toLowerCase());
+    }
+
+    public void videoFoundUpdateUI(String message, String url) {
+        Main.crawlingMessage.setText(message+url);
+        Main.loadingBar.setValue(LOADING_BAR_VALUE++);
+        listModel.addElement(message+url.toString().toLowerCase());
+    }
+    public void interestingFileFoundUpdateUI(String message, String url) {
+        Main.crawlingMessage.setText(message+url);
+        Main.loadingBar.setValue(LOADING_BAR_VALUE++);
+        listModel.addElement(message+url.toString().toLowerCase());
+    }
+
+    public void otherDocsFoundUpdateUI(String message, String url) {
+        Main.crawlingMessage.setText(message+url);
+        Main.loadingBar.setValue(LOADING_BAR_VALUE++);
+        listModel.addElement(message+url.toString().toLowerCase());
+    }
+    public void pdfFoundUpdateUI(String message, String url) {
         Main.crawlingMessage.setText(message+url);
         Main.loadingBar.setValue(LOADING_BAR_VALUE++);
         listModel.addElement(message+url.toString().toLowerCase());

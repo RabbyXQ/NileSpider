@@ -1,45 +1,53 @@
 package nilespider.app.utils.models;
 
 
-import nilespider.app.Main;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashSet;
-import java.util.Set;
 
 public class VideoCrawler extends Crawler{
-    String videoExtensionsRegex = ".*\\.(mp4|avi|mov|flv|wmv|mkv|webm|mpeg|mpg|3gp|ogg|ogv|asf|qt|vob|swf|f4v)$";
 
     public VideoCrawler(String baseUrl, HashSet<String> visitedUrls) {
         super(baseUrl, visitedUrls);
     }
 
 
-    private void findVideos(String url) {
-        try {
-            Document document = Jsoup.connect(url).get();
-            Elements videos = document.getElementsByTag("video");
-
-            for (Element video : videos) {
-                String videoUrl = video.absUrl("src");
-                if (isVideoUrl(videoUrl)) {
-                    System.out.println("Found video: " + videoUrl);
-                    Main.crawlingMessage.setText("Found video: " + videoUrl);
-                    Main.listModel.addElement("Found video: " + videoUrl);
-                    // Add further processing here if needed
-                }
+    private void addVideoToResultList(String url, Elements videos){
+        for (Element video : videos) {
+            String videoUrl = video.absUrl("src");
+            if (isVideoUrl(videoUrl)) {
+                crawlerUIUpdater.videoFoundUpdateUI(VIDEO_FOUND, videoUrl);
             }
-        } catch (IOException e) {
-            System.out.println("Error occurred while crawling " + url);
         }
+
     }
 
+    public Elements documentToElementsVideos(Document document)
+    {
+        Elements videos = document.getElementsByAttribute("ref");
+        videos.addAll(document.getElementsByAttribute("href"));
+        videos.addAll(document.getElementsByAttribute("src"));
+        return  videos;
+    }
+
+    @Override
+    protected boolean searchStringFound(String url) {
+        try {
+            Document document = Jsoup.connect(url).get();
+            addVideoToResultList(url, documentToElementsVideos(document));
+        } catch (IOException e) {
+            crawlerUIUpdater.updateUI(URL_NOT_VALID, "", false);
+        }
+        return false;
+    }
+
+
     private boolean hasVideoExtention(String url) {
+        String videoExtensionsRegex = ".*\\.(mp4|avi|mov|flv|wmv|mkv|webm|mpeg|mpg|3gp|ogg|ogv|asf|qt|vob|swf|f4v)$";
         if (url.matches(videoExtensionsRegex)) {
             return true;
         }

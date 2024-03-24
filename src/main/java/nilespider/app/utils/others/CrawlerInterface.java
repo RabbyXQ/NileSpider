@@ -10,8 +10,11 @@ public interface CrawlerInterface {
     String PHONE_NO_FOUND = "Phone number found: ";
     String IMAGE_FOUND = "Image found: ";
     String VIDEO_FOUND = "Video found: ";
+    String PDF_FOUND = "PDF Found: ";
+    String INTERESTING_FILE_FOUND = "Interesting File Found: ";
+    String OTHER_DOCUMENT_FOUNDT = "Other Document Found: ";
 
-    String[] VIDEO_DOMAINS = {"youtube.com", "vimeo.com", "instagram.com", "vumoo.to", "dailymotion.com",
+    String[] VIDEO_DOMAINS = {"youtube.com/watch", "vimeo.com", "instagram.com", "vumoo.to", "dailymotion.com",
             "metacafe.com", "veoh.com", "twitch.tv", "rutube.ru", "vidio.com", "viki.com",
             "crunchyroll.com", "funimation.com", "netflix.com", "hulu.com", "amazon.com"};
 
