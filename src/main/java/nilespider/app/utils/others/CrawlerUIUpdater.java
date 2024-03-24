@@ -17,6 +17,21 @@ public class CrawlerUIUpdater {
         }
     }
 
+    public void geoInfoFoundUpdateUI(String message, String url, String geoinfo){
+        Main.crawlingMessage.setText(message+geoinfo);
+        Main.loadingBar.setValue(LOADING_BAR_VALUE++);
+        listModel.addElement(message+geoinfo+"\n"+url.toString().toLowerCase());
+    }
+    public void imageFoundUpdateUI(String message, String url) {
+        Main.crawlingMessage.setText(message+url);
+        Main.loadingBar.setValue(LOADING_BAR_VALUE++);
+        listModel.addElement(message+url.toString().toLowerCase());
+    }
+    public void phoneNoFoundUpdateUI(String message, String url, String phoneNo){
+        Main.crawlingMessage.setText(message+phoneNo);
+        Main.loadingBar.setValue(LOADING_BAR_VALUE++);
+        listModel.addElement(message+phoneNo+"\n"+url.toString().toLowerCase());
+    }
 
     public void emailFoundUpdateUI(String message, String url, String email)
     {

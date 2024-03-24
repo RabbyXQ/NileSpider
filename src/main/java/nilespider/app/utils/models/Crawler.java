@@ -9,6 +9,8 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Crawler implements CrawlerInterface {
     protected String baseUrl;
@@ -55,6 +57,11 @@ public class Crawler implements CrawlerInterface {
             crawl(internalUrl);
         }
         crawlerUIUpdater.crawlingDone();
+    }
+
+    protected Matcher stringToMatcher(String regex, String text)
+    {
+        return Pattern.compile(regex).matcher(text);
     }
 
     protected boolean searchStringFound(String url) {
