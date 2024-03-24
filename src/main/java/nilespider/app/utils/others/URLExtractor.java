@@ -1,6 +1,5 @@
 /**
  *This module is used to Extract weblinks from a webpage based.
- *
  * **/
 
 package nilespider.app.utils.others;
@@ -8,12 +7,13 @@ package nilespider.app.utils.others;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class URLExtractor {
     private String baseUrl;
@@ -21,7 +21,9 @@ public class URLExtractor {
     {
         this.baseUrl = baseUrl;
     }
+    public URLExtractor() {
 
+    }
     /**
      * Extracts all the internal webpage urls from given url
      *
@@ -64,5 +66,15 @@ public class URLExtractor {
     public String constructAbsoluteUrl(String href) throws MalformedURLException {
         URL absoluteUrl = new URL(new URL(baseUrl), href);
         return absoluteUrl.toString();
+    }
+    public String extractURLs(String text) {
+        String regex = "\\bhttps?://\\S+\\b";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        String url = "";
+        while (matcher.find()) {
+            url = matcher.group();
+        }
+        return url;
     }
 }
