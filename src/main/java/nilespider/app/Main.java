@@ -4,6 +4,7 @@ package nilespider.app;
 import nilespider.app.ui.pages.History;
 import nilespider.app.ui.pages.HistoryView;
 import nilespider.app.views.main.MainActions;
+import nilespider.app.views.main.SecondaryActions;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -18,7 +19,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 
-public class Main extends MainActions {
+public class Main extends SecondaryActions {
 
 
     public Main() {
@@ -30,15 +31,7 @@ public class Main extends MainActions {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        History.loadHistory("history.dat");
-        if (new File("history.dat").exists()) {
-            History.loadHistory("history.dat");
-        } else {
-            History.saveHistory("history.dat");
-        }
-        History.loadHistory("history.dat");
-        History.addHistory("URL: " + urlBar.getText().toString() + "Query: " + query);
-        History.saveHistory("history.dat");
+
         loadingBar.hide();
 
         crawlBtn.addActionListener(new ActionListener() {
@@ -190,14 +183,12 @@ public class Main extends MainActions {
         resultListMain.setModel(listModel);
         jScrollPane1.setViewportView(resultListMain);
 
-        visualizeBtn.setText("Visualize");
         visualizeBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 visualizeBtnActionPerformed(evt);
             }
         });
 
-        historyBtn.setText("History");
         historyBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 historyBtnActionPerformed(evt);
@@ -207,39 +198,19 @@ public class Main extends MainActions {
         queryText.setBorder(new LineBorder(new Color(0, 153, 153), 3, true));
 
 
-        jLabel3.setText("Query");
-
-        crawlingMessage.setForeground(new Color(51, 204, 0));
-
-        pauseBtn.setText("Pause");
         pauseBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
 
             }
         });
 
-        stopBtn.setText("Stop");
 
-        jMenu1.setText("File");
-
-        loadMenuItem.setText("Load");
-        jMenu1.add(loadMenuItem);
-
-        saveMenuItem.setText("Save");
         saveMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 saveMenuItemActionPerformed(evt);
             }
         });
-        jMenu1.add(saveMenuItem);
 
-        saveAsMenuItem.setText("Save as");
-        saveAsMenuItem.setActionCommand("Save_as");
-        jMenu1.add(saveAsMenuItem);
-
-        jMenuBar1.add(jMenu1);
-
-        downloadsMenuItem.setText("Downloads");
         downloadsMenuItem.addMenuListener(new MenuListener() {
             @Override
             public void menuSelected(MenuEvent e) {
@@ -268,38 +239,10 @@ public class Main extends MainActions {
     }
 
     private void optionSelectorComboBoxActionPerformed(ActionEvent evt) {
-        switch (optionSelectorComboBox.getSelectedIndex()){
-            case 0:
-                queryText.setEnabled(true);
-                break;
-            case 1:
-                queryText.setEnabled(false);
-                break;
-            case 2:
-                queryText.setEnabled(false);
-                break;
-            case 3:
-                queryText.setEnabled(false);
-                break;
-            case 4:
-                queryText.setEnabled(false);
-                break;
-            case 5:
-                queryText.setEnabled(false);
-                break;
-            case 6:
-                queryText.setEnabled(false);
-                break;
-            case 7:
-                queryText.setEnabled(false);
-                break;
-            case 8:
-                queryText.setEnabled(false);
-                break;
-            default:
-                queryText.setEnabled(true);
-                System.out.println("G");
-                break;
+        if (optionSelectorComboBox.getSelectedIndex() > 0) {
+            queryText.setEnabled(false);
+        }else {
+            queryText.setEnabled(true);
         }
     }
 

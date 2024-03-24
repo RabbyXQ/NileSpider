@@ -18,7 +18,32 @@ public class StylizeLayout extends Layout{
         initCrawlBtn();
         initUrlBar();
         initComboBox();
+        initSomeText();
         initThreshold();
+        initMenu();
+    }
+
+    private void initSomeText(){
+        visualizeBtn.setText("Visualize");
+        historyBtn.setText("History");
+        jLabel3.setText("Query");
+        crawlingMessage.setForeground(new Color(51, 204, 0));
+        pauseBtn.setText("Pause");
+        stopBtn.setText("Stop");
+    }
+
+    private void initMenu(){
+        jMenu1.add(saveMenuItem);
+        jMenu1.setText("File");
+        loadMenuItem.setText("Load");
+        jMenu1.add(loadMenuItem);
+        saveMenuItem.setText("Save");
+        saveAsMenuItem.setText("Save as");
+        saveAsMenuItem.setActionCommand("Save_as");
+        jMenu1.add(saveAsMenuItem);
+        jMenuBar1.add(jMenu1);
+        downloadsMenuItem.setText("Downloads");
+
     }
 
     private void stylizeUrlBar(){
