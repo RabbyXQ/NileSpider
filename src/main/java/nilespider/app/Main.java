@@ -1,25 +1,16 @@
 package nilespider.app;
 
 
-import nilespider.app.ui.pages.History;
-import nilespider.app.ui.pages.HistoryView;
-import nilespider.app.views.main.MainActions;
-import nilespider.app.views.main.SecondaryActions;
+import nilespider.app.views.main.CrawlerActions;
 
-import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 
-public class Main extends SecondaryActions {
+public class Main extends CrawlerActions {
 
 
     public Main() {
@@ -28,12 +19,6 @@ public class Main extends SecondaryActions {
     }
 
     private void initComponents() {
-
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-
-        loadingBar.hide();
-
         crawlBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -117,24 +102,7 @@ public class Main extends SecondaryActions {
                 isCrawlingRunning = true;
             }
         });
-        stopBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Hello From Stop Button");
-                if (isCrawlingRunning){
-                    crawlingThread.stop();
-                }
-                {
-                    loadingBar.setValue(0);
-                    loadingBar.hide();
-                    visualizeBtn.hide();
-                    pauseBtn.hide();
-                    stopBtn.hide();
-                }
-                crawlingMessage.setText("Crawling Process stoped");
-                crawlingMessage.setForeground(new Color(180, 0, 0));
-            }
-        });
+
 
         resultListMain.addMouseListener(new MouseListener() {
             @Override
@@ -172,89 +140,17 @@ public class Main extends SecondaryActions {
 
             }
         });
-        thresholdSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int sliderValue = thresholdSlider.getValue();
-                thresholdPercent.setText(sliderValue+"%");
-            }
-        });
 
         resultListMain.setModel(listModel);
+        justifyView();
+    }
+
+    private void justifyView(){
         jScrollPane1.setViewportView(resultListMain);
-
-        visualizeBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                visualizeBtnActionPerformed(evt);
-            }
-        });
-
-        historyBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                historyBtnActionPerformed(evt);
-            }
-        });
-
         queryText.setBorder(new LineBorder(new Color(0, 153, 153), 3, true));
-
-
-        pauseBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-
-            }
-        });
-
-
-        saveMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                saveMenuItemActionPerformed(evt);
-            }
-        });
-
-        downloadsMenuItem.addMenuListener(new MenuListener() {
-            @Override
-            public void menuSelected(MenuEvent e) {
-                downloads.getFrame().setVisible(true);
-            }
-
-            @Override
-            public void menuDeselected(MenuEvent e) {
-
-            }
-
-            @Override
-            public void menuCanceled(MenuEvent e) {
-
-            }
-        });
         jMenuBar1.add(downloadsMenuItem);
-
         setJMenuBar(jMenuBar1);
-
     }
-
-
-    private void saveMenuItemActionPerformed(ActionEvent evt) {
-
-    }
-
-    private void optionSelectorComboBoxActionPerformed(ActionEvent evt) {
-        if (optionSelectorComboBox.getSelectedIndex() > 0) {
-            queryText.setEnabled(false);
-        }else {
-            queryText.setEnabled(true);
-        }
-    }
-
-    private void visualizeBtnActionPerformed(ActionEvent evt) {
-
-    }
-
-    private void historyBtnActionPerformed(ActionEvent evt) {
-        HistoryView historyView = new HistoryView();
-        historyView.getFrame().setVisible(true);
-    }
-
 
     public static void main(String args[]) {
         EventQueue.invokeLater(() -> new Main().setVisible(true));
