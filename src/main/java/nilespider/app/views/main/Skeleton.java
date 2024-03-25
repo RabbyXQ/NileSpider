@@ -1,3 +1,8 @@
+/**
+ * Main Skeleton File for Index page Design of the software.
+ * where all the necessary components of JFrame have been declared and initialized.
+ * **/
+
 package nilespider.app.views.main;
 
 import nilespider.app.ui.pages.Downloads;
@@ -36,8 +41,6 @@ public class Skeleton extends JFrame implements CrawlerTypeInterface{
     protected boolean loadingBarVisibility = false;
     protected boolean actionBtnVisibility = false;
     protected boolean isCrawlingRunning = false;
-    protected Thread crawlingThread;
-    protected Thread emailCrawlerThread;
 
     public Skeleton() {
         listModel = new DefaultListModel<>();

@@ -26,7 +26,7 @@ public class MainActions extends StylizeLayout{
 
     protected void stopCrawling() {
         if (isCrawlingRunning){
-            crawlingThread.stop();
+            CRAWLER_THREADS[optionSelectorComboBox.getSelectedIndex()].stop();
         }
         loadingBar.setValue(0);
         loadingBar.hide();
