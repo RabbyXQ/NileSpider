@@ -1,3 +1,8 @@
+/**
+ * This class is created to Organize the nested Layout Components into singular unit
+ * for better modularization
+ * **/
+
 package nilespider.app.views.main;
 
 import javax.swing.*;

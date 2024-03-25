@@ -1,3 +1,7 @@
+/**
+ * Base Class For Crawler that inherits all the classes that provide Crawling Mechanism
+ * **/
+
 package nilespider.app.utils.models;
 
 import nilespider.app.utils.others.CrawlerInterface;
@@ -5,7 +9,7 @@ import nilespider.app.utils.others.CrawlerUIUpdater;
 import nilespider.app.utils.others.URLExtractor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;

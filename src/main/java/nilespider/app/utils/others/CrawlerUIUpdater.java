@@ -1,3 +1,8 @@
+/**
+ * Provides necessary methods for Updating
+ * the User Interface of the Software based on running crawling status.
+ * **/
+
 package nilespider.app.utils.others;
 
 import nilespider.app.Main;

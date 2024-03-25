@@ -5,7 +5,6 @@ import nilespider.app.ui.pages.HistoryView;
 
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -39,15 +38,15 @@ public class MainActions extends StylizeLayout{
 
 
     private void historyActions(){
-        History.loadHistory("history.dat");
-        if (new File("history.dat").exists()) {
-            History.loadHistory("history.dat");
+        History.loadHistory("");
+        if (new File(HISTORY_SAVING_PATH).exists()) {
+            History.loadHistory(HISTORY_SAVING_PATH);
         } else {
-            History.saveHistory("history.dat");
+            History.saveHistory(HISTORY_SAVING_PATH);
         }
-        History.loadHistory("history.dat");
+        History.loadHistory(HISTORY_SAVING_PATH);
         History.addHistory("URL: " + urlBar.getText().toString() + "Query: " + query);
-        History.saveHistory("history.dat");
+        History.saveHistory(HISTORY_SAVING_PATH);
     }
 
     private void historyBtnAction(){

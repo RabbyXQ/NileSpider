@@ -16,6 +16,7 @@ public interface CrawlerTypeInterface {
     PDFCrawlerController pdfCrawlerController = new PDFCrawlerController();
     OtherDocumentCrawlerController otherDocumentCrawlerController = new OtherDocumentCrawlerController();
     InterestingFileCrawlerController interestingFileCrawlerController = new InterestingFileCrawlerController();
+    String HISTORY_SAVING_PATH = "history.dat";
     String[] COMBO_BOX_MENU_ITEMS = new String[] {
             "Text",
             "Phone",

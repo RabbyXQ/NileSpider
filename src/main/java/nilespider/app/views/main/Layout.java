@@ -1,3 +1,7 @@
+/**
+ * The class that organizes The Layout components to given sequence.
+ * **/
+
 package nilespider.app.views.main;
 
 import javax.swing.*;

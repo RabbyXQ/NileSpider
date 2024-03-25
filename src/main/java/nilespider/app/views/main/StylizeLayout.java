@@ -1,3 +1,7 @@
+/**
+ * The Class after Layout that adds some necessary Components to The existing UI
+ * **/
+
 package nilespider.app.views.main;
 
 import javax.swing.*;
