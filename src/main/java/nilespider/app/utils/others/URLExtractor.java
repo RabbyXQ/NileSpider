@@ -67,14 +67,5 @@ public class URLExtractor {
         URL absoluteUrl = new URL(new URL(baseUrl), href);
         return absoluteUrl.toString();
     }
-    public String extractURLs(String text) {
-        String regex = "\\bhttps?://\\S+\\b";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
-        String url = "";
-        while (matcher.find()) {
-            url = matcher.group();
-        }
-        return url;
-    }
+
 }

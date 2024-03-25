@@ -21,6 +21,7 @@ public class Main extends CrawlerActions {
             @Override
             public void actionPerformed(ActionEvent e) {
                 resetQueryBox();
+                initResultList();
                 clearListModel();
                 updateLoadingBar();
                 updateButtonsVisibility();

@@ -35,10 +35,8 @@ public class MainActions extends StylizeLayout{
         crawlingMessage.setText("Crawling Process stoped");
     }
 
-
-
     private void historyActions(){
-        History.loadHistory("");
+        History.loadHistory(HISTORY_SAVING_PATH);
         if (new File(HISTORY_SAVING_PATH).exists()) {
             History.loadHistory(HISTORY_SAVING_PATH);
         } else {
