@@ -12,15 +12,9 @@ public class CenterPanel extends Panel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         gbc.insets = new Insets(5, 5, 5, 5);
-
-        // Add topPanel
         Panel topPanel = topPanel();
         this.add(topPanel, gbc);
-
-        // Increment gridy to move to the next row
         gbc.gridy++;
-
-        // Add ResultListPane
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1.0;
         this.add(new ResultListPane(), gbc);
