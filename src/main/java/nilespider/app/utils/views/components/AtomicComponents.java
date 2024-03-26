@@ -3,6 +3,8 @@ package nilespider.app.utils.views.components;
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public interface AtomicComponents {
 
@@ -45,5 +47,8 @@ public interface AtomicComponents {
 
     public int[] CRAWL_BUTTON_STATES = new int[]{0,1,2};
     public String[] CRAWL_BUTTON_TEXT = new String[]{"CRAWL", "STOP", "RESET"};
+    public JLabel CRAWLING_MESSAGE = new JLabel("Crawling: ");
+    public JLabel CRAWLING_FOUND_STATUS = new JLabel("FOUND");
+    public JLabel FOUND_DATA_NAME = new JLabel("FILE NAME");
 
 }

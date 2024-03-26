@@ -15,7 +15,7 @@ public class MainActivity extends JFrame {
     private BorderLayout mainLayout;
     private LeftPanel leftPanel;
     private TopPanel topPanel;
-    private CenterPanel centerPanel;
+    public CenterPanel centerPanel;
     private BottomPanel bottomPanel;
 
     /**
@@ -74,6 +74,11 @@ public class MainActivity extends JFrame {
     private void initBottomPanel(){
         bottomPanel = new BottomPanel();
     }
+
+    public void setCenterPanel(CenterPanel centerPanel) {
+        this.centerPanel = centerPanel;
+    }
+
     /**
      * The main method to start the application.
      * @param args Command line arguments (not used).

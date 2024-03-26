@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class LeftPanel extends Panel {
     public LeftPanel(){
-        this.setBackground(new Color(243, 248, 255, 147)); // Set background color
-        this.setPreferredSize(new Dimension(50, getHeight())); // Set preferred size
+        this.setBackground(new Color(200, 208, 204, 255));
+        this.setPreferredSize(new Dimension(50, getHeight()));
     }
 }
