@@ -20,10 +20,9 @@ public class BottomPanel extends Panel implements AtomicComponents{
 
     private void initUI(){
         this.setBackground(new Color(243, 248, 255, 147)); // Set background color
-        CRAWLING_MESSAGE.setBorder(new EmptyBorder(0, 50, 0, 0));
-        FOUND_DATA_NAME.setBorder(new EmptyBorder(0, 50, 0, 0));
-        CRAWLING_FOUND_STATUS.setBorder(new EmptyBorder(0, 50, 0, 0));
-
+        CRAWLING_MESSAGE.setBorder(new EmptyBorder(0, 10, 0, 0));
+        FOUND_DATA_NAME.setBorder(new EmptyBorder(0, 10, 0, 0));
+        CRAWLING_FOUND_STATUS.setBorder(new EmptyBorder(0, 10, 0, 0));
     }
 
 

@@ -52,7 +52,7 @@ public class URLBarBundle extends Panel
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (URL_BAR.getText().contains("https://")) {
+                if (URL_BAR.getText().equals("https://")) {
                     URL_BAR.setText("Enter URL");
                     URL_BAR.setForeground(Color.GRAY); // Change text color when not focused
                 }

@@ -4,7 +4,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class SelectorComboBox extends Panel implements AtomicComponents{
+public class SelectorComboBox extends Panel
+        implements AtomicComponents{
     public SelectorComboBox() {
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

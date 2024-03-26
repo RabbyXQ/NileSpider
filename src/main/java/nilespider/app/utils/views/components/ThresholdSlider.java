@@ -2,6 +2,8 @@ package nilespider.app.utils.views.components;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 public class ThresholdSlider extends Panel implements AtomicComponents{
@@ -29,6 +31,16 @@ public class ThresholdSlider extends Panel implements AtomicComponents{
 
     private void initThresholSlider(){
         THRESHOLD_SLIDER.setBorder(new EmptyBorder(0, 0, 0, 10));
+        updateUi();
+    }
+
+    private void changePercentange()
+    {
+        THRESHOLD_PERCENT.setText(THRESHOLD_SLIDER.getValue()+"%");
+    }
+    private void updateUi(){
+        changePercentange();
+        THRESHOLD_SLIDER.addChangeListener(e -> changePercentange());
     }
 
 }

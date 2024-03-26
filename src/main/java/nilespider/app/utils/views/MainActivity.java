@@ -1,9 +1,6 @@
 package nilespider.app.utils.views;
 
-import nilespider.app.utils.views.components.BottomPanel;
-import nilespider.app.utils.views.components.CenterPanel;
-import nilespider.app.utils.views.components.LeftPanel;
-import nilespider.app.utils.views.components.TopPanel;
+import nilespider.app.utils.views.components.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +8,7 @@ import java.awt.*;
 /**
  * The main activity class representing the application's main window.
  */
-public class MainActivity extends JFrame {
+public class MainActivity extends JFrame implements AtomicComponents {
     private BorderLayout mainLayout;
     private LeftPanel leftPanel;
     private TopPanel topPanel;
@@ -23,8 +20,11 @@ public class MainActivity extends JFrame {
      */
     MainActivity() {
         initMainLayout();
-        setSize(800, 600); // Set initial size of the frame
+        setSize(900, 640); // Set initial size of the frame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Set default close operation
+        for (int i = 0; i < 300; i++) {
+            RESULT_LIST_MODEL.addElement("Messi");
+        }
     }
 
     /**
@@ -84,7 +84,12 @@ public class MainActivity extends JFrame {
      * @param args Command line arguments (not used).
      */
     public static void main(String args[]) {
-        MainActivity mainActivity = new MainActivity();
-        mainActivity.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                MainActivity mainActivity = new MainActivity();
+                mainActivity.setVisible(true);
+            }
+        });
     }
 }

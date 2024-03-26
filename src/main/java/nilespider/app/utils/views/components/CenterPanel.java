@@ -35,5 +35,4 @@ public class CenterPanel extends Panel {
         return panel;
     }
 
-
 }

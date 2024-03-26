@@ -24,7 +24,7 @@ public interface AtomicComponents {
     public Button STOP_BUTTON = new Button("Stop");
 
     public JLabel THRESHOLD_TITLE  = new JLabel("Threshold: ");
-    public  JLabel THRESHOLD_PERCENT =  new JLabel("50");
+    public  JLabel THRESHOLD_PERCENT =  new JLabel();
     public JSlider THRESHOLD_SLIDER = new JSlider();
     public JLabel SELECT_TYPE_TITLE = new JLabel("Select Type: ");
 
