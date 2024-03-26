@@ -1,5 +1,8 @@
 package nilespider.app.utils.views;
 
+import nilespider.app.utils.views.components.BottomPanel;
+import nilespider.app.utils.views.components.CenterPanel;
+import nilespider.app.utils.views.components.LeftPanel;
 import nilespider.app.utils.views.components.TopPanel;
 
 import javax.swing.*;
@@ -10,9 +13,10 @@ import java.awt.*;
  */
 public class MainActivity extends JFrame {
     private BorderLayout mainLayout;
-    private JPanel leftPanel;
+    private LeftPanel leftPanel;
     private TopPanel topPanel;
-    private JPanel centerPanel;
+    private CenterPanel centerPanel;
+    private BottomPanel bottomPanel;
 
     /**
      * Constructor to initialize the main activity.
@@ -29,10 +33,11 @@ public class MainActivity extends JFrame {
     private void initMainLayout(){
         initPanels();
         mainLayout = new BorderLayout();
-        setLayout(mainLayout); // Set the layout manager
-        add(leftPanel, BorderLayout.WEST); // Add left panel to the west
-        add(topPanel, BorderLayout.NORTH); // Add top panel to the north
-        add(centerPanel, BorderLayout.CENTER); // Add center panel to the center
+        setLayout(mainLayout);
+        add(leftPanel, BorderLayout.WEST);
+        add(topPanel, BorderLayout.NORTH);
+        add(centerPanel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     /**
@@ -42,15 +47,14 @@ public class MainActivity extends JFrame {
         initLeftPanel();
         initTopPanel();
         initCenterPanel();
+        initBottomPanel();
     }
 
     /**
      * Initialize the left panel.
      */
     private void initLeftPanel(){
-        leftPanel = new JPanel();
-        leftPanel.setBackground(new Color(8, 119, 161, 147)); // Set background color
-        leftPanel.setPreferredSize(new Dimension(50, getHeight())); // Set preferred size
+        leftPanel = new LeftPanel();
     }
 
     /**
@@ -64,10 +68,12 @@ public class MainActivity extends JFrame {
      * Initialize the center panel.
      */
     private void initCenterPanel(){
-        centerPanel = new JPanel();
-        centerPanel.setBackground(Color.WHITE); // Set background color
+        centerPanel = new CenterPanel();
     }
 
+    private void initBottomPanel(){
+        bottomPanel = new BottomPanel();
+    }
     /**
      * The main method to start the application.
      * @param args Command line arguments (not used).

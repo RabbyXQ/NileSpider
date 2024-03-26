@@ -1,6 +1,7 @@
 package nilespider.app.utils.views.components;
 
 import javax.swing.*;
+import javax.swing.event.ListDataListener;
 import java.awt.*;
 
 public interface AtomicComponents {
@@ -22,6 +23,27 @@ public interface AtomicComponents {
 
     public JLabel THRESHOLD_TITLE  = new JLabel("Threshold: ");
     public  JLabel THRESHOLD_PERCENT =  new JLabel("50");
+    public JSlider THRESHOLD_SLIDER = new JSlider();
+    public JLabel SELECT_TYPE_TITLE = new JLabel("Select Type: ");
+
+    public String[] CRAWLER_TYPE = new String[]{
+            "Text",
+            "Phone",
+            "Email",
+            "Geographic/Map",
+            "Images",
+            "Videos",
+            "PDFs",
+            "Other Docs",
+            "Interesting Files"
+    };
+    public JComboBox<String> SELECTOR_COMBO_BOX = new JComboBox<>();
+    public ComboBoxModel<String> SELECTOR_COMBOBOX_MODEL = new DefaultComboBoxModel<>(CRAWLER_TYPE);
+    public DefaultListModel<String> RESULT_LIST_MODEL = new DefaultListModel<>();
+    public JList<String> RESULT_LIST = new JList<>(RESULT_LIST_MODEL);
     public JProgressBar LOADING_BAR = new JProgressBar();
+
+    public int[] CRAWL_BUTTON_STATES = new int[]{0,1,2};
+    public String[] CRAWL_BUTTON_TEXT = new String[]{"CRAWL", "STOP", "RESET"};
 
 }
