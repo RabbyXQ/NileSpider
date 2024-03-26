@@ -20,7 +20,7 @@ public interface AtomicComponents {
     public Button SIDE_BAR_HISTORY_BUTTON = new Button("History");
     public Button SIDE_BAR_VISUALIZE_BUTTON = new Button("Visualize");
 
-    public Button CRAWL_BUTTON = new Button("Crawl");
+    public CrawlButton CRAWL_BUTTON = new CrawlButton();
     public Button STOP_BUTTON = new Button("Stop");
 
     public JLabel THRESHOLD_TITLE  = new JLabel("Threshold: ");
@@ -47,8 +47,6 @@ public interface AtomicComponents {
 
     public int[] CRAWL_BUTTON_STATES = new int[]{0,1,2};
     public String[] CRAWL_BUTTON_TEXT = new String[]{"CRAWL", "STOP", "RESET"};
-    public JLabel CRAWLING_MESSAGE = new JLabel("Crawling: ");
-    public JLabel CRAWLING_FOUND_STATUS = new JLabel("FOUND");
-    public JLabel FOUND_DATA_NAME = new JLabel("FILE NAME");
+    public CrawlingMessage CRAWLING_MESSAGE_BUNDLE = new CrawlingMessage();
 
 }

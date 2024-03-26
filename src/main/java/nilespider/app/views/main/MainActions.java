@@ -48,11 +48,9 @@ public class MainActions extends StylizeLayout{
     }
 
     private void historyBtnAction(){
-        historyBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                HistoryView historyView = new HistoryView();
-                historyView.getFrame().setVisible(true);
-            }
+        historyBtn.addActionListener(evt -> {
+            HistoryView historyView = new HistoryView();
+            historyView.getFrame().setVisible(true);
         });
     }
 

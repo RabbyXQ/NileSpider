@@ -84,12 +84,7 @@ public class MainActivity extends JFrame implements AtomicComponents {
      * @param args Command line arguments (not used).
      */
     public static void main(String args[]) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                MainActivity mainActivity = new MainActivity();
-                mainActivity.setVisible(true);
-            }
-        });
+        MainActivity mainActivity = new MainActivity();
+        mainActivity.setVisible(true);
     }
 }

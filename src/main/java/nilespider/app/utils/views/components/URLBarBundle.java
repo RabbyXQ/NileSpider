@@ -10,7 +10,6 @@ public class URLBarBundle extends Panel
     public URLBarBundle(){
         initUrlBar();
         initQueryBox();
-        initCrawlBtn();
         initUrlBarBundle();
     }
 
@@ -87,12 +86,5 @@ public class URLBarBundle extends Panel
             }
         });
     }
-
-
-    private void initCrawlBtn() {
-        CRAWL_BUTTON.setPreferredSize(new Dimension(100, 30)); // Adjusted size
-        CRAWL_BUTTON.setFont(new Font("Arial", Font.BOLD, 14)); // Set font
-    }
-
 
 }
