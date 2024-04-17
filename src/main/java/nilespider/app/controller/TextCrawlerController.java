@@ -14,12 +14,5 @@ public class TextCrawlerController implements AtomicComponents {
         thread = new Thread(new Crawler(url, query, visitedUrls));
         this.url = url;
         this.query = query;
-        thread.start();
-    }
-    public void stopThread(){
-        thread.stop();
-    }
-    public void resetTread(){
-        thread = new Thread(new Crawler(url, query, visitedUrls));
     }
 }

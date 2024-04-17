@@ -18,7 +18,7 @@ public class InterestingFileCrawler extends Crawler {
         for (Element link : links) {
             String docUrl = link.absUrl("href");
             if (isInterestingFile(docUrl)){
-                //crawlerUIUpdater.interestingFileFoundUpdateUI(INTERESTING_FILE_FOUND, docUrl);
+                CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, "Interesting File!");
             }
         }
     }
@@ -35,7 +35,7 @@ public class InterestingFileCrawler extends Crawler {
             Document document = Jsoup.connect(url).get();
             addInterestingFileToResultList(url, documentToElements(document));
         } catch (IOException e) {
-            //crawlerUIUpdater.updateUI(URL_NOT_VALID, "", false);
+            CRAWLING_MESSAGE_BUNDLE.updateUIError(url);
         }
         return false;
     }

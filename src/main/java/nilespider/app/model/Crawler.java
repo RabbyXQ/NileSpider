@@ -24,7 +24,6 @@ public class Crawler
     {
         this.baseUrl = baseUrl;
         this.visitedUrls = new HashSet<>();
-        crawl(baseUrl);
     }
 
     public Crawler(String baseUrl, String searchString, HashSet<String> visitedUrls)

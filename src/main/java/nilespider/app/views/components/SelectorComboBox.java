@@ -5,6 +5,8 @@ import nilespider.app.views.components.interfaces.AtomicComponents;
 
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class SelectorComboBox extends Panel
         implements AtomicComponents {
@@ -26,5 +28,12 @@ public class SelectorComboBox extends Panel
     private void initComboBox(){
         SELECT_TYPE_TITLE.setBorder(new EmptyBorder(0, 5, 0, 0));
         SELECTOR_COMBO_BOX.setModel(SELECTOR_COMBOBOX_MODEL);
+        SELECTOR_COMBO_BOX.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(SELECTOR_COMBO_BOX.getSelectedIndex() > 0){QUERY_BOX.enable(false); QUERY_BOX.setText("Not Available");}else{ QUERY_BOX.enable(true); QUERY_BOX.setText("Enter query");}
+            }
+        });
     }
+
 }

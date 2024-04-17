@@ -18,7 +18,7 @@ public class PhoneNumberCrawler extends Crawler {
     private void addPhoneToResultList(Matcher matcher, String url){
         while (matcher.find()) {
             String phoneno = matcher.group();
-            //crawlerUIUpdater.phoneNoFoundUpdateUI(PHONE_NO_FOUND, url, phoneno);
+            CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, "Phone Number");
         }
     }
 
@@ -29,7 +29,7 @@ public class PhoneNumberCrawler extends Crawler {
             Document document = Jsoup.connect(url).get();
             addPhoneToResultList(stringToMatcher(phoneRegex, document.text()), url);
         } catch (IOException e) {
-            //crawlerUIUpdater.updateUI(URL_NOT_VALID, "", false);
+            CRAWLING_MESSAGE_BUNDLE.updateUIError(url);
         }
         return false;
     }

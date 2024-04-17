@@ -17,7 +17,7 @@ public class ImageCrawler extends Crawler {
     private void addImageToResultList(String url, Elements images){
         for (Element image : images) {
             String imageUrl = image.absUrl("src");
-            //crawlerUIUpdater.imageFoundUpdateUI(IMAGE_FOUND, imageUrl);
+            CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, "Image");
         }
 
     }
@@ -29,7 +29,7 @@ public class ImageCrawler extends Crawler {
             Elements images = document.getElementsByTag("img");
             addImageToResultList(url, images);
         } catch (IOException e) {
-            //crawlerUIUpdater.updateUI(URL_NOT_VALID, "", false);
+            CRAWLING_MESSAGE_BUNDLE.updateUIError(url);
         }
         return false;
     }

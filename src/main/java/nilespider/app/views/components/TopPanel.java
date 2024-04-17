@@ -15,11 +15,6 @@ public class TopPanel extends JPanel implements AtomicComponents {
     private BufferedImage backgroundImage;
 
     public TopPanel() {
-        try {
-            backgroundImage = ImageIO.read(new File("/Users/macbook/Desktop/background_top.jpg"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(new URLBarBundle());
         this.add(LOADING_BAR);
@@ -40,4 +35,5 @@ public class TopPanel extends JPanel implements AtomicComponents {
         this.setPreferredSize(new Dimension(getWidth(), 70));
         LOADING_BAR.setBorder(new EmptyBorder(0, 10, 0, 10));
     }
+
 }

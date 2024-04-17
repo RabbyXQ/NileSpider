@@ -15,7 +15,7 @@ public class GeographicCrawler extends Crawler {
     private void addGeoInfoToResultList(Matcher matcher, String url){
         while (matcher.find()) {
             String geoinfo = matcher.group();
-            //crawlerUIUpdater.geoInfoFoundUpdateUI(GEO_INFO_FOUND, url, geoinfo);
+            CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, "Map");
         }
     }
 
@@ -27,7 +27,7 @@ public class GeographicCrawler extends Crawler {
             String geoRegex = "\\b(earth|map|address|location|place|geography|maps.google.com)\\b";
             addGeoInfoToResultList(stringToMatcher(geoRegex, document.text()), url);
         } catch (IOException e) {
-            //crawlerUIUpdater.updateUI(URL_NOT_VALID, "", false);
+            CRAWLING_MESSAGE_BUNDLE.updateUIError(url);
         }
         return false;
     }

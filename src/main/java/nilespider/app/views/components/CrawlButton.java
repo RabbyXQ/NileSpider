@@ -1,6 +1,7 @@
 package nilespider.app.views.components;
 
-import nilespider.app.controller.TextCrawlerController;
+import nilespider.app.controller.*;
+import nilespider.app.model.*;
 import nilespider.app.views.components.interfaces.AtomicComponents;
 
 import javax.swing.*;
@@ -12,12 +13,18 @@ import java.awt.event.ActionListener;
  */
 public class CrawlButton extends JButton implements AtomicComponents {
     private final String[] buttonTexts = new String[]{"Crawl", "Stop", "Reset"};
+    CrawlerController  textCrawlerController;
+    EmailCrawlerController emailCrawlerController;
+    GeographicCrawlerController geographicCrawlerController;
+    ImageCrawlerController imageCrawlerController;
+    InterestingFileCrawlerController interestingFileCrawlerController;
+    OtherDocumentCrawlerController otherDocumentCrawlerController;
+    PDFCrawlerController pdfCrawlerController;
+    PhoneNumberCrawlerController phoneNumberCrawlerController;
+    VideoCrawlerController videoCrawlerController;
     public int buttonStatusCode = 0;
     private final ActionListener actionListener;
 
-    /**
-     * Constructs a CrawlButton with default settings.
-     */
     public CrawlButton() {
         this.setPreferredSize(new Dimension(100, 30));
         this.setFont(new Font("Arial", Font.BOLD, 14));
@@ -26,26 +33,16 @@ public class CrawlButton extends JButton implements AtomicComponents {
         this.addActionListener(actionListener);
     }
 
-    /**
-     * Sets the text of the button based on the status code.
-     * @param statusCode The status code representing the state of the button.
-     */
+
     public void setButtonText(int statusCode) {
         setButtonStatusCode(statusCode);
         this.setText(buttonTexts[statusCode]);
     }
 
-    /**
-     * Sets the status code of the button.
-     * @param value The value to set as the status code.
-     */
     public void setButtonStatusCode(int value) {
         buttonStatusCode = value;
     }
 
-    /**
-     * Performs an action based on the current status code.
-     */
     public void performAction() {
         if (buttonStatusCode == 0) {
             setButtonStatusCode(1);
@@ -61,35 +58,43 @@ public class CrawlButton extends JButton implements AtomicComponents {
             performReset();
         }
     }
-
-    /**
-     * Performs the crawl action.
-     */
-    TextCrawlerController  textCrawlerController;
-
+    private void textCrawler(){
+        textCrawlerController = new CrawlerController(URL_BAR.getText().toString(), QUERY_BOX.getText().toString());
+        textCrawlerController.start();
+    }
+    private void pdfCrawler(){
+        pdfCrawlerController = new PDFCrawlerController(URL_BAR.getText().toString());
+        QUERY_BOX.enable(false);
+        pdfCrawlerController.start();
+    }
     private void performCrawl() {
-        textCrawlerController  = new TextCrawlerController(URL_BAR.getText().toString(), QUERY_BOX.getText().toString());
+        switch (SELECTOR_COMBO_BOX.getSelectedIndex()) {
+            case 0:
+                textCrawler();
+            case 6:
+                pdfCrawler();
+            default:
+                textCrawler();
+        }
         URL_BAR.enable(false);
         QUERY_BOX.enable(false);
         CRAWLING_MESSAGE_BUNDLE.show();
         LOADING_BAR.show();
     }
 
-    /**
-     * Performs the stop action.
-     */
+
+    void stopTreads(){
+        textCrawlerController.stopThread();
+        pdfCrawlerController.stop();
+    }
+
     private void performStop() {
         CRAWLING_MESSAGE_BUNDLE.hide();
-        textCrawlerController.stopThread();
+        stopTreads();
         LOADING_BAR.hide();
     }
 
-    /**
-     * Performs the reset action.
-     */
     private void performReset() {
-        // Implement reset action here
-        textCrawlerController.resetTread();
         RESULT_LIST_MODEL.clear();
         URL_BAR.enable(true);
         QUERY_BOX.enable(true);

@@ -20,7 +20,7 @@ public class OtherDocumentCrawler extends Crawler {
         for (Element link : links) {
             String docUrl = link.absUrl("href");
             if (isDocumentUrl(docUrl)){
-                //crawlerUIUpdater.otherDocsFoundUpdateUI(OTHER_DOCUMENT_FOUNDT, docUrl);
+                CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, "Document/Not PDF");
             }
         }
     }
@@ -37,7 +37,7 @@ public class OtherDocumentCrawler extends Crawler {
             Document document = Jsoup.connect(url).get();
             addOtherDocToResultList(url, documentToElementsPDFS(document));
         } catch (IOException e) {
-            //crawlerUIUpdater.updateUI(URL_NOT_VALID, "", false);
+            CRAWLING_MESSAGE_BUNDLE.updateUIError(url);
         }
         return false;
     }

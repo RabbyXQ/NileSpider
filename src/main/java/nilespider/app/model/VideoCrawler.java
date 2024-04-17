@@ -21,7 +21,7 @@ public class VideoCrawler extends Crawler {
         for (Element video : videos) {
             String videoUrl = video.absUrl("src");
             if (isVideoUrl(videoUrl)) {
-                //crawlerUIUpdater.videoFoundUpdateUI(VIDEO_FOUND, videoUrl);
+                CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, "Video");
             }
         }
 
@@ -41,7 +41,7 @@ public class VideoCrawler extends Crawler {
             Document document = Jsoup.connect(url).get();
             addVideoToResultList(url, documentToElementsVideos(document));
         } catch (IOException e) {
-            //crawlerUIUpdater.updateUI(URL_NOT_VALID, "", false);
+            CRAWLING_MESSAGE_BUNDLE.updateUIError(url);
         }
         return false;
     }

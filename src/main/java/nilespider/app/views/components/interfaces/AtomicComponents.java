@@ -1,10 +1,12 @@
 package nilespider.app.views.components.interfaces;
 
+import nilespider.app.model.*;
 import nilespider.app.views.components.CrawlButton;
 import nilespider.app.views.components.CrawlingMessage;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashSet;
 
 public interface AtomicComponents {
 
@@ -48,5 +50,17 @@ public interface AtomicComponents {
     public int[] CRAWL_BUTTON_STATES = new int[]{0,1,2};
     public String[] CRAWL_BUTTON_TEXT = new String[]{"CRAWL", "STOP", "RESET"};
     public CrawlingMessage CRAWLING_MESSAGE_BUNDLE = new CrawlingMessage();
+    public Runnable[] runnables = new Runnable[]{
+            new Crawler( URL_BAR.getText().toString(), QUERY_BOX.getText().toString(), new HashSet<String>()),
+            new EmailCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
+            new GeographicCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
+            new ImageCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
+            new InterestingFileCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
+            new OtherDocumentCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
+            new PDFCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
+            new PhoneNumberCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
+            new PhoneNumberCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
+            new VideoCrawler(QUERY_BOX.getText().toString(), new HashSet<String>())
+    };
 
 }
