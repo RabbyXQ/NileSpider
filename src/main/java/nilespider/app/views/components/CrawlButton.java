@@ -76,6 +76,9 @@ public class CrawlButton extends JButton implements AtomicComponents {
             default:
                 textCrawler();
         }
+        if (QUERY_BOX.getText().toString() != null){
+            historyView.addToHistory(URL_BAR.getText().toString()+ "\nQuery: " +QUERY_BOX.getText().toString());
+        }
         URL_BAR.enable(false);
         QUERY_BOX.enable(false);
         CRAWLING_MESSAGE_BUNDLE.show();

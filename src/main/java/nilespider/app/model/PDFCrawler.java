@@ -21,6 +21,7 @@ public class PDFCrawler extends Crawler implements AtomicComponents {
         for (Element link : links) {
             String pdfUrl = link.absUrl("href");
             System.out.println("Found PDF: " + pdfUrl);
+            testResultList.add(pdfUrl);
             CRAWLING_MESSAGE_BUNDLE.updateUI(true, pdfUrl, "PDF");
         }
     }
@@ -31,6 +32,7 @@ public class PDFCrawler extends Crawler implements AtomicComponents {
         try {
             findPDf(url);
         } catch (IOException e) {
+            System.out.println("Error");
             CRAWLING_MESSAGE_BUNDLE.updateUIError(url);
         }
         return false;

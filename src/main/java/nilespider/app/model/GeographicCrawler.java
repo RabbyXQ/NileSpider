@@ -1,5 +1,6 @@
 package nilespider.app.model;
 
+import nilespider.test.services.TestInterface;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -7,7 +8,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 
-public class GeographicCrawler extends Crawler {
+public class GeographicCrawler extends Crawler implements TestInterface {
     public GeographicCrawler(String baseUrl, HashSet<String> visitedUrls) {
         super(baseUrl, visitedUrls);
     }
@@ -15,6 +16,7 @@ public class GeographicCrawler extends Crawler {
     private void addGeoInfoToResultList(Matcher matcher, String url){
         while (matcher.find()) {
             String geoinfo = matcher.group();
+            testResultList.add(url);
             CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, "Map");
         }
     }

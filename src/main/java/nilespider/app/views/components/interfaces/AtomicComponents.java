@@ -1,6 +1,7 @@
 package nilespider.app.views.components.interfaces;
 
 import nilespider.app.model.*;
+import nilespider.app.ui.pages.HistoryView;
 import nilespider.app.views.components.CrawlButton;
 import nilespider.app.views.components.CrawlingMessage;
 
@@ -62,5 +63,8 @@ public interface AtomicComponents {
             new PhoneNumberCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
             new VideoCrawler(QUERY_BOX.getText().toString(), new HashSet<String>())
     };
+
+
+    HistoryView historyView = new HistoryView();
 
 }

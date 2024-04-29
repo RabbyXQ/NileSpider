@@ -1,11 +1,21 @@
 package nilespider.app.views.components;
 
+import nilespider.app.ui.pages.Downloads;
+import nilespider.app.ui.pages.HistoryView;
+import nilespider.app.views.components.interfaces.AtomicComponents;
+
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
-public class LeftPanel extends JPanel {
+public class LeftPanel extends JPanel implements AtomicComponents {
     private String[] buttonTitles = new String[]{"Save", "Copy", "Downloads", "History", "Help"};
     private JButton[] buttons = new JButton[5];
 
@@ -44,14 +54,65 @@ public class LeftPanel extends JPanel {
         }
     }
 
+     void saveDataToFile(DefaultListModel<String> model) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save As");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Text Files (*.txt)", "txt"));
+
+        int userSelection = fileChooser.showSaveDialog(null);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            if (!filePath.toLowerCase().endsWith(".txt")) {
+                filePath += ".txt"; // Ensure file has .txt extension
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                for (int i = 0; i < model.size(); i++) {
+                    writer.write(model.getElementAt(i) + "\n");
+                }
+                JOptionPane.showMessageDialog(null, "Data saved successfully to:\n" + filePath);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error saving data to file:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    void copyDataToClipboard(DefaultListModel<String> model) {
+        StringBuilder dataBuilder = new StringBuilder();
+        for (int i = 0; i < model.size(); i++) {
+            dataBuilder.append(model.getElementAt(i)).append("\n");
+        }
+        StringSelection stringSelection = new StringSelection(dataBuilder.toString().trim());
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+        JOptionPane.showMessageDialog(null, "Data copied to clipboard successfully!");
+    }
+
+
+    void openDownloads(){
+        Downloads downloads = new Downloads();
+        downloads.getFrame().setVisible(true);
+    }
+
+    void openHistory(){
+        historyView.getFrame().setVisible(true);
+    }
+
     private void buttonActions() {
         for (int i = 0; i < 5; i++) {
             int finalI = i;
             buttons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    activeCurrentButton(finalI);
-                    System.out.println(finalI);
+                    if (finalI == 2){
+                        openDownloads();
+                    }else if ( finalI == 0){
+                        saveDataToFile(RESULT_LIST_MODEL);
+                    } else if (finalI == 1) {
+                        copyDataToClipboard(RESULT_LIST_MODEL);
+                    } else if (finalI == 3) {
+                        openHistory();
+                    }
                 }
             });
         }

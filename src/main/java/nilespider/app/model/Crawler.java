@@ -5,6 +5,7 @@
 package nilespider.app.model;
 
 import nilespider.app.views.components.interfaces.AtomicComponents;
+import nilespider.test.services.TestInterface;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -15,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Crawler
-        implements AtomicComponents, Runnable {
+        implements AtomicComponents, Runnable, TestInterface {
     protected String baseUrl;
     protected Set<String> visitedUrls;
     protected String searchString;
@@ -40,6 +41,8 @@ public class Crawler
         }
         if (!visitedUrls.contains(url) && url.contains(baseUrl)) {
             visitedUrls.add(url);
+            System.out.println("Crawling: "+ url);
+            testCrawlResultList.add(url);
             CRAWLING_MESSAGE_BUNDLE.updateUI(false, url, QUERY_BOX.getText().toString());
             LOADING_BAR.setValue(loadingValue++);
             checkAndProcessUrl(url);
@@ -48,7 +51,11 @@ public class Crawler
 
     public void checkAndProcessUrl(String url) {
         if (searchStringFound(url)) {
-            CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, QUERY_BOX.getText().toString());
+            System.out.println("Found: "+ url);
+            testResultList.add(url);
+            if (SELECTOR_COMBO_BOX.getSelectedIndex() == 0){
+                CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, QUERY_BOX.getText().toString());
+            }
         }
         URLExtractor urlExtractor = new URLExtractor(baseUrl);
         Set<String> internalUrls = urlExtractor.extractInternalUrls(url);
