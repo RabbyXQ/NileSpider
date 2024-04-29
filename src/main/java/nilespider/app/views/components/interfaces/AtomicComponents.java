@@ -1,6 +1,8 @@
 package nilespider.app.views.components.interfaces;
 
 import nilespider.app.model.*;
+import nilespider.app.ui.pages.Downloads;
+import nilespider.app.ui.pages.HistoryView;
 import nilespider.app.views.components.CrawlButton;
 import nilespider.app.views.components.CrawlingMessage;
 
@@ -16,51 +18,23 @@ public interface AtomicComponents {
     public JTextField URL_BAR = new JTextField();
     public JTextField QUERY_BOX = new JTextField();
 
-    public Button SIDEBAR_SAVE_BUTTON = new Button("Save");
-    public Button SIDEBAR_LOAD_BUTTON = new Button("Load");
-    public Button SIDEBAR_DOWNLOADS_BUTTON = new Button("Downlads");
-    public Button SIDE_BAR_HISTORY_BUTTON = new Button("History");
-    public Button SIDE_BAR_VISUALIZE_BUTTON = new Button("Visualize");
-
     public CrawlButton CRAWL_BUTTON = new CrawlButton();
-    public Button STOP_BUTTON = new Button("Stop");
 
     public JLabel THRESHOLD_TITLE  = new JLabel("Threshold: ");
     public  JLabel THRESHOLD_PERCENT =  new JLabel();
     public JSlider THRESHOLD_SLIDER = new JSlider();
     public JLabel SELECT_TYPE_TITLE = new JLabel("Select Type: ");
 
-    public String[] CRAWLER_TYPE = new String[]{
-            "Text",
-            "Phone",
-            "Email",
-            "Geographic/Map",
-            "Images",
-            "Videos",
-            "PDFs",
-            "Other Docs",
-            "Interesting Files"
-    };
+    public String[] CRAWLER_TYPE = new String[]{"Text", "Phone", "Email", "Geographic/Map", "Images", "Videos", "PDFs", "Other Docs", "Interesting Files"};
     public JComboBox<String> SELECTOR_COMBO_BOX = new JComboBox<>();
     public ComboBoxModel<String> SELECTOR_COMBOBOX_MODEL = new DefaultComboBoxModel<>(CRAWLER_TYPE);
     public DefaultListModel<String> RESULT_LIST_MODEL = new DefaultListModel<>();
     public JList<String> RESULT_LIST = new JList<>(RESULT_LIST_MODEL);
     public JProgressBar LOADING_BAR = new JProgressBar();
 
-    public int[] CRAWL_BUTTON_STATES = new int[]{0,1,2};
-    public String[] CRAWL_BUTTON_TEXT = new String[]{"CRAWL", "STOP", "RESET"};
     public CrawlingMessage CRAWLING_MESSAGE_BUNDLE = new CrawlingMessage();
-    public Runnable[] runnables = new Runnable[]{
-            new Crawler( URL_BAR.getText().toString(), QUERY_BOX.getText().toString(), new HashSet<String>()),
-            new EmailCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
-            new GeographicCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
-            new ImageCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
-            new InterestingFileCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
-            new OtherDocumentCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
-            new PDFCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
-            new PhoneNumberCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
-            new PhoneNumberCrawler(QUERY_BOX.getText().toString(), new HashSet<String>()),
-            new VideoCrawler(QUERY_BOX.getText().toString(), new HashSet<String>())
-    };
 
+
+    HistoryView historyView = new HistoryView();
+    Downloads downloads = new Downloads();
 }

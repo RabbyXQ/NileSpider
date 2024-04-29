@@ -34,7 +34,7 @@ public class URLExtractor {
             Elements links = Jsoup.connect(currentUrl).get().select("[href]");
             internalUrls = this.constructInternalUrls(links);
         } catch (IOException e) {
-            System.out.println("Error occured!");
+            System.out.println("Execption");
         }
         return internalUrls;
     }

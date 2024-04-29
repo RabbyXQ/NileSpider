@@ -72,6 +72,7 @@ public class Downloads {
         frame.add(clearButton, BorderLayout.SOUTH);
 
         frame.setVisible(true);
+        frame.dispose();
     }
 
     public void addToDownloads(String url, String saveDir) {
@@ -187,7 +188,7 @@ public class Downloads {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Downloads downloads = new Downloads();
-            downloads.addToDownloads("https://assets.ctfassets.net/31lakm8hkl1j/3WKmQ14C8oqmlyccCX9AcT/46157f1e58409ff3bbdaf1e456d4f3c7/All_deo_kuhulz_zone_20230917_0001.pdf__23.pdf", "downloads");
+            //downloads.addToDownloads("https://assets.ctfassets.net/31lakm8hkl1j/3WKmQ14C8oqmlyccCX9AcT/46157f1e58409ff3bbdaf1e456d4f3c7/All_deo_kuhulz_zone_20230917_0001.pdf__23.pdf", "downloads");
         });
     }
 

@@ -16,6 +16,8 @@ public class EmailCrawler extends Crawler implements AtomicComponents {
     private void addEmailToResultList(Matcher matcher, String url){
         while (matcher.find()) {
             String email = matcher.group();
+            System.out.println("Email: "+ email);
+            testResultList.add(email);
             CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, "Email");
         }
     }

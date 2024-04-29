@@ -1,103 +1,84 @@
 package nilespider.app.views.components;
 
 import nilespider.app.controller.*;
-import nilespider.app.model.*;
+import nilespider.app.ui.pages.HistoryView;
 import nilespider.app.views.components.interfaces.AtomicComponents;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
-/**
- * Custom JButton for Crawl actions with different states.
- */
 public class CrawlButton extends JButton implements AtomicComponents {
-    private final String[] buttonTexts = new String[]{"Crawl", "Stop", "Reset"};
-    CrawlerController  textCrawlerController;
-    EmailCrawlerController emailCrawlerController;
-    GeographicCrawlerController geographicCrawlerController;
-    ImageCrawlerController imageCrawlerController;
-    InterestingFileCrawlerController interestingFileCrawlerController;
-    OtherDocumentCrawlerController otherDocumentCrawlerController;
-    PDFCrawlerController pdfCrawlerController;
-    PhoneNumberCrawlerController phoneNumberCrawlerController;
-    VideoCrawlerController videoCrawlerController;
-    public int buttonStatusCode = 0;
-    private final ActionListener actionListener;
+    private final Thread[] crawlerThreads = new Thread[9];
+    private int buttonStatusCode = 0;
 
     public CrawlButton() {
-        this.setPreferredSize(new Dimension(100, 30));
-        this.setFont(new Font("Arial", Font.BOLD, 14));
-        this.setText(buttonTexts[0]);
-        this.actionListener = e -> performAction();
-        this.addActionListener(actionListener);
-    }
-
-
-    public void setButtonText(int statusCode) {
-        setButtonStatusCode(statusCode);
-        this.setText(buttonTexts[statusCode]);
-    }
-
-    public void setButtonStatusCode(int value) {
-        buttonStatusCode = value;
+        setPreferredSize(new Dimension(100, 30));
+        setFont(new Font("Arial", Font.BOLD, 14));
+        setText("Crawl");
+        addActionListener(e -> performAction());
     }
 
     public void performAction() {
-        if (buttonStatusCode == 0) {
-            setButtonStatusCode(1);
-            setButtonText(1);
-            performCrawl();
-        } else if (buttonStatusCode == 1) {
-            setButtonStatusCode(2);
-            setButtonText(2);
-            performStop();
-        } else {
-            setButtonStatusCode(0);
-            setButtonText(0);
-            performReset();
+        switch (buttonStatusCode) {
+            case 0 -> { buttonStatusCode = 1; setText("Stop"); performCrawl(); }
+            case 1 -> { buttonStatusCode = 2; setText("Reset"); stopCrawlerThreads(); }
+            default -> { buttonStatusCode = 1; setText("Crawl"); performReset(); }
         }
     }
-    private void textCrawler(){
-        textCrawlerController = new CrawlerController(URL_BAR.getText().toString(), QUERY_BOX.getText().toString());
-        textCrawlerController.start();
-    }
-    private void pdfCrawler(){
-        pdfCrawlerController = new PDFCrawlerController(URL_BAR.getText().toString());
-        QUERY_BOX.enable(false);
-        pdfCrawlerController.start();
-    }
+
     private void performCrawl() {
-        switch (SELECTOR_COMBO_BOX.getSelectedIndex()) {
-            case 0:
-                textCrawler();
-            case 6:
-                pdfCrawler();
-            default:
-                textCrawler();
+        stopCrawlerThreads();
+        int selectedIndex = SELECTOR_COMBO_BOX.getSelectedIndex();
+        if (selectedIndex >= 0 && selectedIndex < crawlerThreads.length) {
+            startCrawlerThread(selectedIndex);
         }
-        URL_BAR.enable(false);
-        QUERY_BOX.enable(false);
-        CRAWLING_MESSAGE_BUNDLE.show();
-        LOADING_BAR.show();
+        handleHistory();
+        handleUIState(true);
     }
 
-
-    void stopTreads(){
-        textCrawlerController.stopThread();
-        pdfCrawlerController.stop();
+    private void stopCrawlerThreads() {
+        for (Thread thread : crawlerThreads) {
+            if (thread != null && thread.isAlive()) {
+                thread.interrupt();
+            }
+        }
     }
 
-    private void performStop() {
-        CRAWLING_MESSAGE_BUNDLE.hide();
-        stopTreads();
-        LOADING_BAR.hide();
+    private void startCrawlerThread(int index) {
+        if (crawlerThreads[index] == null || !crawlerThreads[index].isAlive()) {
+            crawlerThreads[index] = switch (index) {
+                case 0 -> new TextCrawlerController(URL_BAR.getText(), QUERY_BOX.getText());
+                case 1 -> new PhoneNumberCrawlerController(URL_BAR.getText());
+                case 2 -> new EmailCrawlerController(URL_BAR.getText());
+                case 3 -> new GeographicCrawlerController(URL_BAR.getText());
+                case 4 -> new ImageCrawlerController(URL_BAR.getText());
+                case 5 -> new VideoCrawlerController(URL_BAR.getText());
+                case 6 -> new PDFCrawlerController(URL_BAR.getText());
+                case 7 -> new OtherDocumentCrawlerController(URL_BAR.getText());
+                case 8 -> new InterestingFileCrawlerController(URL_BAR.getText());
+                default -> null;
+            };
+            if (crawlerThreads[index] != null) {
+                crawlerThreads[index].start();
+            }
+        }
+    }
+
+    private void handleHistory() {
+        if (QUERY_BOX.getText() != null && !QUERY_BOX.getText().isEmpty()) {
+            historyView.addToHistory(URL_BAR.getText() + "\nQuery: " + QUERY_BOX.getText());
+        }
+    }
+
+    private void handleUIState(boolean enabled) {
+        URL_BAR.setEnabled(enabled);
+        QUERY_BOX.setEnabled(enabled);
+        CRAWLING_MESSAGE_BUNDLE.setVisible(!enabled);
+        LOADING_BAR.setVisible(!enabled);
     }
 
     private void performReset() {
+        handleUIState(true);
         RESULT_LIST_MODEL.clear();
-        URL_BAR.enable(true);
-        QUERY_BOX.enable(true);
-        CRAWLING_MESSAGE_BUNDLE.hide();
     }
 }

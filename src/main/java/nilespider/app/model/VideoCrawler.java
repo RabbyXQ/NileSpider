@@ -1,70 +1,53 @@
 package nilespider.app.model;
 
-
+import nilespider.app.views.components.interfaces.AtomicComponents;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 
-public class VideoCrawler extends Crawler {
+public class VideoCrawler extends Crawler implements AtomicComponents {
 
     public VideoCrawler(String baseUrl, HashSet<String> visitedUrls) {
         super(baseUrl, visitedUrls);
     }
 
+    private void findVideos(String url) throws IOException {
+        Document document = Jsoup.connect(url).get();
 
-    private void addVideoToResultList(String url, Elements videos){
-        for (Element video : videos) {
-            String videoUrl = video.absUrl("src");
-            if (isVideoUrl(videoUrl)) {
-                CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, "Video");
-            }
-        }
+        // Check for video links in anchor tags
+        Elements videoLinks = document.select("a[href*=youtube.com], a[href*=vimeo.com], a[href*=dailymotion.com]");
+        extractAndProcessVideos(videoLinks);
 
+        // Check for video formats directly embedded in the page
+        Elements videoEmbeds = document.select("video > source[src]");
+        extractAndProcessVideos(videoEmbeds);
+
+        // Check for videos embedded in iframes
+        Elements iframeVideos = document.select("iframe[src*=youtube.com], iframe[src*=vimeo.com], iframe[src*=dailymotion.com]");
+        extractAndProcessVideos(iframeVideos);
     }
 
-    public Elements documentToElementsVideos(Document document)
-    {
-        Elements videos = document.getElementsByAttribute("ref");
-        videos.addAll(document.getElementsByAttribute("href"));
-        videos.addAll(document.getElementsByAttribute("src"));
-        return  videos;
+    private void extractAndProcessVideos(Elements elements) {
+        for (Element element : elements) {
+            String videoUrl = element.absUrl("src");
+            System.out.println("Found Video: " + videoUrl);
+            testResultList.add(videoUrl);
+            CRAWLING_MESSAGE_BUNDLE.updateUI(true, videoUrl, "Video");
+        }
     }
 
     @Override
     protected boolean searchStringFound(String url) {
         try {
-            Document document = Jsoup.connect(url).get();
-            addVideoToResultList(url, documentToElementsVideos(document));
+            findVideos(url);
         } catch (IOException e) {
+            System.out.println("Error crawling URL: " + url);
             CRAWLING_MESSAGE_BUNDLE.updateUIError(url);
         }
         return false;
-    }
-
-
-    private boolean hasVideoExtention(String url) {
-        String videoExtensionsRegex = ".*\\.(mp4|avi|mov|flv|wmv|mkv|webm|mpeg|mpg|3gp|ogg|ogv|asf|qt|vob|swf|f4v)$";
-        if (url.matches(videoExtensionsRegex)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean hasVideoDomain(String url) {
-        for (String domain : new ArrayList<String>()) {
-            if (url.contains(domain)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isVideoUrl(String url) {
-        return  hasVideoDomain(url) || hasVideoExtention(url);
     }
 }

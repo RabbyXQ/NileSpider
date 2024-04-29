@@ -2,25 +2,17 @@ package nilespider.app.controller;
 
 import nilespider.app.model.Crawler;
 import nilespider.app.model.EmailCrawler;
+import nilespider.app.model.PDFCrawler;
 import nilespider.app.views.components.interfaces.AtomicComponents;
 
 import java.util.HashSet;
 
-public class EmailCrawlerController implements AtomicComponents {
-    private Thread thread;
-    private HashSet<String> visitedUrls;
+public class EmailCrawlerController extends Thread implements AtomicComponents {
     private String url, query;
     public EmailCrawlerController(String url){
-        visitedUrls = new HashSet<>();
-        thread = new Thread(new EmailCrawler(url, visitedUrls));
+        super(new EmailCrawler(url, new HashSet<String>()));
         this.url = url;
-        this.query = query;
-        thread.start();
     }
-    public void stopThread(){
-        thread.stop();
-    }
-    public void resetTread(){
-        thread = new Thread(new EmailCrawler(url, visitedUrls));
-    }
+
 }
+

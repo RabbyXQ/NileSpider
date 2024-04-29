@@ -1,6 +1,7 @@
 package nilespider.app.model;
 
 
+import nilespider.test.services.TestInterface;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,7 +10,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.HashSet;
 
-public class OtherDocumentCrawler extends Crawler {
+public class OtherDocumentCrawler extends Crawler implements TestInterface {
 
     public OtherDocumentCrawler(String baseUrl, HashSet<String> visitedUrls) {
         super(baseUrl, visitedUrls);
@@ -20,6 +21,7 @@ public class OtherDocumentCrawler extends Crawler {
         for (Element link : links) {
             String docUrl = link.absUrl("href");
             if (isDocumentUrl(docUrl)){
+                testResultList.add(docUrl);
                 CRAWLING_MESSAGE_BUNDLE.updateUI(true, url, "Document/Not PDF");
             }
         }
@@ -43,7 +45,7 @@ public class OtherDocumentCrawler extends Crawler {
     }
 
     private boolean isDocumentUrl(String url) {
-        return url.matches(".*\\.(txt|odt|doc|docx|dat|script|cs|c|cxx|cpp|exe|app|dmg|apk|apkx|sql|sqlite)$");  // Match common video file extensions
+        return url.matches(".*\\.(txt|odt|doc|docx|dat|script|cs|c|cxx|cpp|exe|app|dmg|apk|apkx|sql|sqlite|ppt|pptx)$");  // Match common video file extensions
 
     }
 }
